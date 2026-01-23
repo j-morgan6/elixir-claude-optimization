@@ -1,0 +1,15 @@
+{
+  "name": "elixir-claude-optimization",
+  "owner": {
+    "name": "Jose R",
+    "url": "https://github.com/j-morgan6"
+  },
+  "plugins": [
+    {
+      "name": "elixir-optimization",
+      "source": "./",
+      "description": "Comprehensive Elixir and Phoenix LiveView optimization with skills, hooks, and agent documentation",
+      "version": "1.0.0"
+    }
+  ]
+}

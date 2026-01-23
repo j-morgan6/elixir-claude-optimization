@@ -31,13 +31,27 @@ Detailed reference material for complex tasks:
 
 ## Installation
 
-### Quick Install (Recommended)
+### Method 1: Claude Code Plugin (Easiest)
+
+Install directly from Claude Code:
+
+```bash
+# Add the marketplace
+/plugin marketplace add j-morgan6/elixir-claude-optimization
+
+# Install the plugin
+/plugin install elixir-optimization
+```
+
+This will install all skills, hooks, and agent documentation automatically.
+
+### Method 2: Quick Install Script
 
 ```bash
 curl -sL https://raw.githubusercontent.com/j-morgan6/elixir-claude-optimization/main/install.sh | bash
 ```
 
-### Manual Installation
+### Method 3: Manual Installation
 
 1. Clone this repository:
 ```bash

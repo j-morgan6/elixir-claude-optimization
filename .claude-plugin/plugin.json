@@ -1,0 +1,13 @@
+{
+  "name": "elixir-optimization",
+  "version": "1.0.0",
+  "description": "Comprehensive Elixir and Phoenix LiveView optimization with skills, hooks, and agent documentation for idiomatic code",
+  "author": {
+    "name": "Jose R",
+    "url": "https://github.com/j-morgan6"
+  },
+  "homepage": "https://github.com/j-morgan6/elixir-claude-optimization",
+  "repository": "https://github.com/j-morgan6/elixir-claude-optimization",
+  "license": "MIT",
+  "keywords": ["elixir", "phoenix", "liveview", "ecto", "optimization", "best-practices"]
+}
