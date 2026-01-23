@@ -37,8 +37,7 @@ else
     TEMP_DIR=$(mktemp -d)
     cd "$TEMP_DIR"
 
-    # TODO: Update with your actual GitHub URL
-    REPO_URL="https://github.com/YOUR_USERNAME/elixir-claude-optimization"
+    REPO_URL="https://github.com/j-morgan6/elixir-claude-optimization"
 
     if command -v git &> /dev/null; then
         git clone "$REPO_URL" .

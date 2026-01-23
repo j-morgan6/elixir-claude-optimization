@@ -34,14 +34,14 @@ Detailed reference material for complex tasks:
 ### Quick Install (Recommended)
 
 ```bash
-curl -sL https://raw.githubusercontent.com/YOUR_USERNAME/elixir-claude-optimization/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/j-morgan6/elixir-claude-optimization/main/install.sh | bash
 ```
 
 ### Manual Installation
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/elixir-claude-optimization.git
+git clone https://github.com/j-morgan6/elixir-claude-optimization.git
 cd elixir-claude-optimization
 ```
 
