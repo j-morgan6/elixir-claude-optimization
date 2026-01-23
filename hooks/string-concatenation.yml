@@ -1,0 +1,27 @@
+---
+name: string-concatenation
+description: Warn about string concatenation in loops or recursive functions
+action: warn
+patterns:
+  - regex: 'Enum\.(map|reduce|each).*<>'
+    message: |
+      String concatenation with <> inside Enum operations can be inefficient.
+      Consider using IO lists or Enum.join for better performance.
+
+      Instead of:
+        Enum.reduce(list, "", fn item, acc -> acc <> item.name <> ", " end)
+
+      Use IO lists:
+        list
+        |> Enum.map(& [&1.name, ", "])
+        |> IO.iodata_to_binary()
+
+      Or Enum.join:
+        list
+        |> Enum.map(& &1.name)
+        |> Enum.join(", ")
+
+  - regex: 'def\s+\w+.*do\s+.*<>.*\1\('
+    message: |
+      String concatenation in recursive function detected.
+      Consider using IO lists or building a list and joining at the end.

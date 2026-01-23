@@ -1,0 +1,173 @@
+# [Your Project Name] - Claude Instructions
+
+## Project Overview
+
+[Describe your Elixir/Phoenix project here]
+
+## Technology Stack
+
+- Elixir 1.15+
+- Phoenix 1.7+
+- Phoenix LiveView
+- PostgreSQL with Ecto
+- TailwindCSS
+
+## Project Structure
+
+See `~/.claude/agents/project-structure.md` for detailed directory layout and organization principles.
+
+**Key directories:**
+- `lib/[your_app]/` - Core business logic and contexts
+- `lib/[your_app]_web/` - Web layer (LiveViews, controllers, components)
+- `priv/repo/migrations/` - Database migrations
+- `priv/static/` - Static assets
+
+## Core Contexts
+
+[List your main contexts and their responsibilities]
+
+## Development Commands
+
+```bash
+# Setup project (first time)
+mix setup
+
+# Start server
+mix phx.server
+
+# Run tests
+mix test
+
+# Database operations
+mix ecto.create
+mix ecto.migrate
+mix ecto.rollback
+mix ecto.reset
+
+# Code quality
+mix format
+mix credo
+```
+
+## Configuration
+
+Configuration lives in `config/`:
+- `config.exs` - Shared config
+- `dev.exs` - Development
+- `test.exs` - Test environment
+- `prod.exs` - Production
+
+**Never hardcode configuration values.** Always use:
+```elixir
+Application.get_env(:your_app, :config_key)
+```
+
+## Code Style and Conventions
+
+### Pattern Matching First
+
+Prefer pattern matching and multiple function heads over if/else statements.
+
+See: `~/.claude/skills/elixir-patterns.md`
+
+### Error Handling
+
+Use `with` statements for sequential operations that can fail.
+
+See: `~/.claude/skills/error-handling.md`
+
+### LiveView Development
+
+When working on LiveView modules, consult `~/.claude/agents/liveview-checklist.md`.
+
+**Key points:**
+- Always add `@impl true` before callbacks
+- Handle both connected and disconnected mount states
+- Subscribe to PubSub only when `connected?(socket)`
+- Return proper tuples: `{:noreply, socket}` or `{:ok, socket}`
+
+### Database Operations
+
+Follow Ecto conventions in `~/.claude/agents/ecto-conventions.md`.
+
+**Key points:**
+- Use changesets for all inserts/updates
+- Preload associations to avoid N+1 queries
+- Write operations through context modules
+- Validate at changeset level, constrain at database level
+
+## When to Reference Agent Docs
+
+Consult these documents when working on specific tasks:
+
+- **Starting a new LiveView?** → `~/.claude/agents/liveview-checklist.md`
+- **Writing database queries?** → `~/.claude/agents/ecto-conventions.md`
+- **Need to understand project layout?** → `~/.claude/agents/project-structure.md`
+- **Writing tests?** → `~/.claude/agents/testing-guide.md`
+
+## Skills
+
+Skills are automatically loaded based on context. They contain:
+
+1. **elixir-patterns.md** - Pattern matching, pipes, with statements, naming
+2. **phoenix-liveview.md** - LiveView lifecycle, events, uploads, navigation
+3. **ecto-database.md** - Schemas, changesets, queries, migrations
+4. **error-handling.md** - Error tuples, with statements, supervisors
+
+## Hooks
+
+Hooks actively enforce code quality:
+
+- **nested-if-else** - Warns about nested if/else (prefer pattern matching)
+- **hardcoded-config** - Blocks hardcoded paths/limits (use Application.get_env)
+- **inefficient-enum** - Warns about multiple Enum passes (use for comprehensions)
+- **missing-impl** - Blocks callbacks without @impl true
+- **string-concatenation** - Warns about <> in loops (use IO lists)
+
+If a hook triggers, follow its suggestion. Hooks catch common Elixir anti-patterns.
+
+## Development Workflow
+
+### Adding a New Feature
+
+1. **Plan the context**: Does it fit in existing context, or need a new one?
+2. **Schema first**: Define schema and changeset
+3. **Migration**: Create migration with `mix ecto.gen.migration`
+4. **Context functions**: Add public API to context module
+5. **LiveView**: Create LiveView for UI
+6. **Tests**: Write tests for context and LiveView
+
+## Testing
+
+- Use `mix test` to run tests
+- Tests mirror source structure
+- LiveView tests use `Phoenix.LiveViewTest`
+
+See `~/.claude/agents/testing-guide.md` for comprehensive testing patterns.
+
+## Code Quality
+
+Run these before committing:
+
+```bash
+mix format          # Format code
+mix credo          # Static analysis
+mix test           # Run tests
+```
+
+## Architecture Principles
+
+1. **Contexts are boundaries** - Don't bypass contexts to access Repo directly from web
+2. **Thin LiveViews** - Business logic in contexts, not LiveViews
+3. **Pattern matching over conditionals** - More idiomatic and clearer
+4. **Let it crash** - Don't write defensive code for impossible states
+5. **Validate early** - Use changesets, let database constraints be final check
+
+## Notes for Claude
+
+- Reference agent docs when you need detailed information about specific areas
+- Trust the hooks - if they warn/block, there's usually a better Elixir pattern
+- Skills provide quick reference for common patterns
+- When in doubt, prefer pattern matching, explicit returns, and simple solutions
+- Test coverage is important - write tests for new features
+- Don't add features beyond what's requested - keep it simple

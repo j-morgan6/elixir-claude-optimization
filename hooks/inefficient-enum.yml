@@ -1,0 +1,41 @@
+---
+name: inefficient-enum
+description: Warn on inefficient Enum chains that make multiple passes
+action: warn
+patterns:
+  - regex: '\|>\s*Enum\.map\([^)]+\)\s*\|>\s*Enum\.filter\('
+    message: |
+      Multiple Enum operations detected (map followed by filter).
+      Consider using a for comprehension or Enum.reduce for a single pass.
+
+      Instead of:
+        list
+        |> Enum.map(&transform/1)
+        |> Enum.filter(&valid?/1)
+
+      Use for comprehension:
+        for item <- list,
+            transformed = transform(item),
+            valid?(transformed) do
+          transformed
+        end
+
+  - regex: '\|>\s*Enum\.filter\([^)]+\)\s*\|>\s*Enum\.map\('
+    message: |
+      Multiple Enum operations detected (filter followed by map).
+      Consider using a for comprehension for a single pass.
+
+      Instead of:
+        list
+        |> Enum.filter(&valid?/1)
+        |> Enum.map(&transform/1)
+
+      Use for comprehension:
+        for item <- list, valid?(item) do
+          transform(item)
+        end
+
+  - regex: '\|>\s*Enum\.\w+\([^)]+\)\s*\|>\s*Enum\.\w+\([^)]+\)\s*\|>\s*Enum\.\w+'
+    message: |
+      Three or more chained Enum operations detected.
+      Consider using Enum.reduce or for comprehension for better performance.
