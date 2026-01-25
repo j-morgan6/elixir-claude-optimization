@@ -50,10 +50,16 @@ else
     SOURCE_DIR="$TEMP_DIR"
 fi
 
-# Install skills
+# Install skills (must be in subdirectories with SKILL.md filename)
 echo -e "${YELLOW}Installing skills...${NC}"
 mkdir -p "$CLAUDE_DIR/skills"
-cp -r "$SOURCE_DIR/skills/"* "$CLAUDE_DIR/skills/"
+for skill_dir in "$SOURCE_DIR/skills"/*; do
+    if [ -d "$skill_dir" ]; then
+        skill_name=$(basename "$skill_dir")
+        mkdir -p "$CLAUDE_DIR/skills/$skill_name"
+        cp "$skill_dir/SKILL.md" "$CLAUDE_DIR/skills/$skill_name/SKILL.md"
+    fi
+done
 echo -e "${GREEN}✓ Installed 4 skills${NC}"
 
 # Install hooks
