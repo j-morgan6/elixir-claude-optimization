@@ -1,3 +1,8 @@
+---
+name: elixir-patterns
+description: Use when writing Elixir code. Covers pattern matching, pipe operators, with statements, guards, list comprehensions, and Elixir naming conventions.
+---
+
 # Elixir Patterns and Conventions
 
 ## Pattern Matching

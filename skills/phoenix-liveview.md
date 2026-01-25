@@ -1,3 +1,8 @@
+---
+name: phoenix-liveview
+description: Use when working with Phoenix LiveView. Covers lifecycle, mount/handle_event/handle_info callbacks, file uploads, navigation, PubSub, and LiveView testing.
+---
+
 # Phoenix LiveView Patterns
 
 ## LiveView Lifecycle

@@ -1,3 +1,8 @@
+---
+name: ecto-database
+description: Use when working with Ecto and database operations. Covers schemas, changesets, queries, associations, preloading, transactions, and migrations.
+---
+
 # Ecto Database Patterns
 
 ## Schema Definition

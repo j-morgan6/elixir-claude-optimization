@@ -1,3 +1,8 @@
+---
+name: error-handling
+description: Use when handling errors in Elixir. Covers tagged tuples, with statements, try/rescue, bang functions, supervision trees, and error boundaries in LiveView.
+---
+
 # Elixir Error Handling Patterns
 
 ## Tagged Tuples
