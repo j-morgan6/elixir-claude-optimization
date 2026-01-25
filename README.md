@@ -61,9 +61,9 @@ cd elixir-claude-optimization
 
 2. Copy files to your Claude configuration directory:
 ```bash
-# Install skills
+# Install skills (must be in subdirectories)
 mkdir -p ~/.claude/skills
-cp skills/* ~/.claude/skills/
+cp -r skills/* ~/.claude/skills/
 
 # Install hooks
 mkdir -p ~/.claude/hooks
@@ -185,10 +185,10 @@ elixir-claude-optimization/
 ├── install.sh                         # Automated installer
 ├── CLAUDE.md.template                 # Project template
 ├── skills/                            # Elixir expertise
-│   ├── elixir-patterns.md
-│   ├── phoenix-liveview.md
-│   ├── ecto-database.md
-│   └── error-handling.md
+│   ├── elixir-patterns/SKILL.md
+│   ├── phoenix-liveview/SKILL.md
+│   ├── ecto-database/SKILL.md
+│   └── error-handling/SKILL.md
 ├── hooks/                             # Real-time enforcement
 │   ├── nested-if-else.yml
 │   ├── hardcoded-config.yml
