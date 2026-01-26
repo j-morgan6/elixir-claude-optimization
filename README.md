@@ -34,14 +34,41 @@ Detailed reference material for complex tasks:
 
 ### Method 1: Claude Code Plugin (Easiest)
 
-Install directly from Claude Code:
+**In your terminal (CLI commands):**
+
+```bash
+# Add the marketplace
+claude plugin marketplace add j-morgan6/elixir-claude-optimization
+
+# Install the plugin at user scope (applies to all projects)
+claude plugin install elixir-optimization --scope user
+
+# Verify installation
+claude plugin list
+# You should see: elixir-optimization@elixir-claude-optimization (enabled)
+```
+
+**OR in a Claude Code session (slash commands):**
 
 ```bash
 # Add the marketplace
 /plugin marketplace add j-morgan6/elixir-claude-optimization
 
 # Install the plugin
-/plugin install elixir-optimization
+/plugin install elixir-optimization --scope user
+
+# Verify
+/plugin list
+```
+
+**Scope Options:**
+- `--scope user` (recommended) - Available in all your projects
+- `--scope project` - Only available in current project
+
+**Alternative shorthand:**
+```bash
+# Install directly with marketplace specified
+claude plugin install elixir-optimization@elixir-claude-optimization --scope user
 ```
 
 This will install all skills, hooks, and agent documentation automatically.
