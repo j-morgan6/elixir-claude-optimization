@@ -62,11 +62,26 @@ for skill_dir in "$SOURCE_DIR/skills"/*; do
 done
 echo -e "${GREEN}✓ Installed 4 skills${NC}"
 
-# Install hooks
-echo -e "${YELLOW}Installing hooks...${NC}"
-mkdir -p "$CLAUDE_DIR/hooks"
-cp -r "$SOURCE_DIR/hooks/"* "$CLAUDE_DIR/hooks/"
-echo -e "${GREEN}✓ Installed 5 hooks${NC}"
+# Install hooks (merge into settings.json)
+echo -e "${YELLOW}Installing hooks into settings.json...${NC}"
+SETTINGS_FILE="$CLAUDE_DIR/settings.json"
+
+if [ ! -f "$SETTINGS_FILE" ]; then
+  echo '{}' > "$SETTINGS_FILE"
+fi
+
+# Backup existing settings
+cp "$SETTINGS_FILE" "$SETTINGS_FILE.backup"
+
+# Merge hooks using jq if available, otherwise manual merge
+if command -v jq &> /dev/null; then
+  jq -s '.[0] * .[1]' "$SETTINGS_FILE" "$SOURCE_DIR/hooks-settings.json" > "$SETTINGS_FILE.tmp"
+  mv "$SETTINGS_FILE.tmp" "$SETTINGS_FILE"
+  echo -e "${GREEN}✓ Installed 6 hooks (merged with jq)${NC}"
+else
+  echo -e "${YELLOW}⚠ jq not found. Please manually merge hooks-settings.json into ~/.claude/settings.json${NC}"
+  echo -e "${YELLOW}  See INSTALL-HOOKS.md for instructions${NC}"
+fi
 
 # Install agent documentation
 echo -e "${YELLOW}Installing agent documentation...${NC}"
@@ -95,8 +110,11 @@ echo -e "${GREEN}Installation complete!${NC}"
 echo ""
 echo "Installed components:"
 echo "  • 4 Skills (elixir-patterns, phoenix-liveview, ecto-database, error-handling)"
-echo "  • 5 Hooks (nested-if-else, hardcoded-config, inefficient-enum, missing-impl, string-concatenation)"
+echo "  • 6 Hooks (missing-impl, hardcoded-paths, hardcoded-sizes, nested-if, inefficient-enum, string-concat)"
 echo "  • 4 Agent docs (project-structure, liveview-checklist, ecto-conventions, testing-guide)"
+echo ""
+echo "Hooks are now in ~/.claude/settings.json"
+echo "Backup saved to ~/.claude/settings.json.backup"
 echo ""
 echo "These customizations will apply to all your Elixir projects."
 echo ""
