@@ -6,8 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if grep -qE 'def\\s+(mount|handle_event|handle_info|handle_call|handle_cast|render|init|terminate)\\(' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null && ! grep -B1 \"def\\s\\+(mount|handle_event|handle_info|handle_call|handle_cast|render|init|terminate)\\(\" \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null | grep -q '@impl'; then echo '⚠️  Missing @impl true before callback function. Add @impl true before mount, handle_event, handle_info, handle_call, handle_cast, render, init, or terminate callbacks.' && exit 2; fi",
-            "description": "Block callbacks without @impl true"
+            "command": "FILTERED=$(grep -v '^\\s*#' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null); if echo \"$FILTERED\" | grep -qE 'def\\s+(mount|handle_event|handle_info|handle_call|handle_cast|render|init|terminate)\\(' && ! echo \"$FILTERED\" | grep -B1 'def\\s\\+(mount|handle_event|handle_info|handle_call|handle_cast|render|init|terminate)\\(' | grep -q '@impl'; then echo '⚠️  Missing @impl true before callback function. Add @impl true before mount, handle_event, handle_info, handle_call, handle_cast, render, init, or terminate callbacks.' && exit 2; fi",
+            "description": "Block callbacks without @impl true (ignores comments)"
           },
           {
             "type": "command",
@@ -16,18 +16,18 @@
           },
           {
             "type": "command",
-            "command": "if grep -qE '(max_file_size|file_size_limit|max_upload)\\s*=\\s*[0-9]{7,}' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '🚫 Hardcoded file size limit detected. Move to Application config.' && exit 2; fi",
+            "command": "if grep -qE '(max_file_size|file_size_limit|max_upload|max_size)\\s*=\\s*[0-9]{7,}' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '🚫 Hardcoded file size limit detected (7+ digits). Move to Application config.' && exit 2; fi",
             "description": "Block hardcoded file size limits"
           },
           {
             "type": "command",
-            "command": "if grep -qE 'if\\s+.+\\s+do\\s+.*if\\s+.+\\s+do' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '⚠️  Nested if/else detected. Consider using pattern matching or case statements for more idiomatic Elixir.' && exit 1; fi",
-            "description": "Warn on nested if/else"
+            "command": "COLLAPSED=$(tr '\\n' ' ' < \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null); if echo \"$COLLAPSED\" | grep -qE 'if\\s+[^d]+\\s+do\\s+[^e]*if\\s+[^d]+\\s+do'; then echo '⚠️  Nested if/else detected. Consider using pattern matching or case statements for more idiomatic Elixir.' && exit 1; fi",
+            "description": "Warn on nested if/else (handles multiline)"
           },
           {
             "type": "command",
-            "command": "if grep -qE '\\|>\\s*Enum\\.(map|filter)\\([^)]+\\)\\s*\\|>\\s*Enum\\.(map|filter)\\(' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '⚠️  Multiple Enum operations detected. Consider using a for comprehension or Enum.reduce for better performance.' && exit 1; fi",
-            "description": "Warn on inefficient Enum chains"
+            "command": "COLLAPSED=$(tr '\\n' ' ' < \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null); if echo \"$COLLAPSED\" | grep -qE '\\|>\\s*Enum\\.(map|filter)\\([^)]+\\)\\s*\\|>\\s*Enum\\.(map|filter)\\('; then echo '⚠️  Multiple Enum operations detected. Consider using a for comprehension or Enum.reduce for better performance.' && exit 1; fi",
+            "description": "Warn on inefficient Enum chains (handles multiline)"
           },
           {
             "type": "command",
