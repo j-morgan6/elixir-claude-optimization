@@ -11,13 +11,14 @@ Domain expertise that teaches Claude about Elixir/Phoenix patterns:
 - **ecto-database.md** - Schemas, changesets, queries, associations, migrations
 - **error-handling.md** - Error tuples, with statements, supervisors, error boundaries
 
-### 🔒 Hooks (5 files)
+### 🔒 Hooks (6 shell commands in settings.json)
 Active enforcement rules that catch anti-patterns in real-time:
-- **nested-if-else.yml** - Warns about nested if/else (prefer pattern matching)
-- **hardcoded-config.yml** - Blocks hardcoded config values (use Application.get_env)
-- **inefficient-enum.yml** - Warns about multiple Enum passes (use for comprehensions)
-- **missing-impl.yml** - Blocks callback implementations without @impl true
-- **string-concatenation.yml** - Warns about string concatenation in loops (use IO lists)
+- **missing-impl** - Blocks callbacks without @impl true (exit 2)
+- **hardcoded-paths** - Blocks hardcoded file paths (exit 2)
+- **hardcoded-sizes** - Blocks hardcoded file size limits (exit 2)
+- **nested-if-else** - Warns about nested if/else, suggests pattern matching (exit 1)
+- **inefficient-enum** - Warns about multiple Enum operations (exit 1)
+- **string-concatenation** - Warns about string concatenation in loops (exit 1)
 
 ### 📚 Agent Documentation (4 files)
 Detailed reference material for complex tasks:
@@ -65,9 +66,13 @@ cd elixir-claude-optimization
 mkdir -p ~/.claude/skills
 cp -r skills/* ~/.claude/skills/
 
-# Install hooks
-mkdir -p ~/.claude/hooks
-cp hooks/* ~/.claude/hooks/
+# Install hooks (merge into settings.json)
+# If you have jq installed:
+jq -s '.[0] * .[1]' ~/.claude/settings.json hooks-settings.json > ~/.claude/settings.json.tmp
+mv ~/.claude/settings.json.tmp ~/.claude/settings.json
+
+# Or manually merge hooks-settings.json into ~/.claude/settings.json
+# See INSTALL-HOOKS.md for details
 
 # Install agent documentation
 mkdir -p ~/.claude/agents
@@ -131,11 +136,11 @@ def process(_), do: :inactive
 ## What This Optimizes
 
 ### Code Quality
-- ✅ Enforces pattern matching over if/else
-- ✅ Prevents hardcoded configuration
-- ✅ Catches inefficient Enum operations
-- ✅ Requires @impl on all callbacks
-- ✅ Prevents string concatenation in loops
+- ✅ **Blocks** callbacks without @impl true (prevents compilation)
+- ✅ **Blocks** hardcoded file paths and sizes (prevents runtime issues)
+- ✅ **Warns** about nested if/else (suggests pattern matching)
+- ✅ **Warns** about inefficient Enum chains (suggests for comprehensions)
+- ✅ **Warns** about string concatenation in loops (suggests IO lists)
 
 ### Developer Experience
 - 🎯 Proactive guidance on Elixir idioms
@@ -189,12 +194,8 @@ elixir-claude-optimization/
 │   ├── phoenix-liveview/SKILL.md
 │   ├── ecto-database/SKILL.md
 │   └── error-handling/SKILL.md
-├── hooks/                             # Real-time enforcement
-│   ├── nested-if-else.yml
-│   ├── hardcoded-config.yml
-│   ├── inefficient-enum.yml
-│   ├── missing-impl.yml
-│   └── string-concatenation.yml
+├── hooks-settings.json                # Hook configuration for settings.json
+├── INSTALL-HOOKS.md                   # Hook installation guide
 └── agents/                            # Reference documentation
     ├── project-structure.md
     ├── liveview-checklist.md
@@ -236,17 +237,13 @@ Edit any skill or hook file - changes take effect on next Claude Code restart
 
 ```bash
 # Remove skills
-rm -rf ~/.claude/skills/elixir-patterns.md
-rm -rf ~/.claude/skills/phoenix-liveview.md
-rm -rf ~/.claude/skills/ecto-database.md
-rm -rf ~/.claude/skills/error-handling.md
+rm -rf ~/.claude/skills/elixir-patterns
+rm -rf ~/.claude/skills/phoenix-liveview
+rm -rf ~/.claude/skills/ecto-database
+rm -rf ~/.claude/skills/error-handling
 
-# Remove hooks
-rm -rf ~/.claude/hooks/nested-if-else.yml
-rm -rf ~/.claude/hooks/hardcoded-config.yml
-rm -rf ~/.claude/hooks/inefficient-enum.yml
-rm -rf ~/.claude/hooks/missing-impl.yml
-rm -rf ~/.claude/hooks/string-concatenation.yml
+# Remove hooks (manually edit ~/.claude/settings.json and remove the "hooks" section)
+# Or restore backup: mv ~/.claude/settings.json.backup ~/.claude/settings.json
 
 # Remove agent docs
 rm -rf ~/.claude/agents/project-structure.md
