@@ -4,21 +4,31 @@ A comprehensive configuration package for Claude Code that transforms it into an
 
 ## What's Included
 
-### 🎓 Skills (4 files)
+### 🎓 Skills (7 files)
 Domain expertise that teaches Claude about Elixir/Phoenix patterns:
-- **elixir-patterns.md** - Pattern matching, pipes, with statements, naming conventions
-- **phoenix-liveview.md** - LiveView lifecycle, events, uploads, PubSub, navigation
-- **ecto-database.md** - Schemas, changesets, queries, associations, migrations
-- **error-handling.md** - Error tuples, with statements, supervisors, error boundaries
+- **elixir-patterns** - Pattern matching, pipes, with statements, naming conventions
+- **phoenix-liveview** - LiveView lifecycle, events, uploads, PubSub, navigation
+- **ecto-database** - Schemas, changesets, queries, associations, migrations
+- **error-handling** - Error tuples, with statements, supervisors, error boundaries
+- **phoenix-uploads** - File upload configuration, manual vs auto-upload, error handling
+- **phoenix-static-files** - Static paths configuration, serving uploaded files, troubleshooting
+- **liveview-lifecycle** - Render phases, safe assign access, mount initialization
 
-### 🔒 Hooks (6 shell commands in settings.json)
+### 🔒 Hooks (10 shell commands in settings.json)
 Active enforcement rules that catch anti-patterns in real-time:
-- **missing-impl** - Blocks callbacks without @impl true (exit 2)
-- **hardcoded-paths** - Blocks hardcoded file paths (exit 2)
-- **hardcoded-sizes** - Blocks hardcoded file size limits (exit 2)
-- **nested-if-else** - Warns about nested if/else, suggests pattern matching (exit 1)
-- **inefficient-enum** - Warns about multiple Enum operations (exit 1)
-- **string-concatenation** - Warns about string concatenation in loops (exit 1)
+
+**Blocking (exit 2 - prevents action):**
+- **missing-impl** - Blocks callbacks without @impl true
+- **hardcoded-paths** - Blocks hardcoded file paths
+- **hardcoded-sizes** - Blocks hardcoded file size limits
+- **static-paths-validator** - Blocks file references not in static_paths()
+- **deprecated-components** - Blocks deprecated Phoenix components (.flash_group, form_for, live_redirect)
+
+**Warnings (exit 1 - shows warning, allows action):**
+- **nested-if-else** - Warns about nested if/else, suggests pattern matching
+- **inefficient-enum** - Warns about multiple Enum operations
+- **string-concatenation** - Warns about string concatenation in loops
+- **auto-upload-warning** - Warns when auto_upload: true is detected
 
 ### 📚 Agent Documentation (4 files)
 Detailed reference material for complex tasks:

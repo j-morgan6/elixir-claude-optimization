@@ -33,6 +33,21 @@
             "type": "command",
             "command": "if grep -qE 'Enum\\.(map|reduce|each).*<>' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '⚠️  String concatenation with <> in Enum operations. Consider using IO lists or Enum.join for better performance.' && exit 1; fi",
             "description": "Warn on string concatenation in loops"
+          },
+          {
+            "type": "command",
+            "command": "if grep -qE 'def static_paths' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then PATHS=$(grep -A10 'def static_paths' \"$CLAUDE_HOOK_FILE_PATH\" | grep -oE '\"[^\"]+\"' | tr -d '\"' | tr '\\n' ' '); REFS=$(grep -hoE '/[a-z_]+/' \"$CLAUDE_HOOK_FILE_PATH\" | sort -u | tr -d '/' | tr '\\n' ' '); for ref in $REFS; do echo \" $PATHS \" | grep -qw \"$ref\" || echo \"⚠️  Path reference '/$ref/' found but '$ref' not in static_paths(). Add to lib/my_app_web.ex: def static_paths, do: ~w(assets $ref favicon.ico)\" && exit 2; done; fi",
+            "description": "Block file path references not in static_paths"
+          },
+          {
+            "type": "command",
+            "command": "if grep -qE '<\\.(flash_group|flash)' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '🚫 .flash_group component is deprecated in Phoenix 1.8+. Flash handling is now automatic in layouts. Remove <.flash_group> calls.' && exit 2; fi; if grep -qE 'form_for\\(' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '🚫 form_for is deprecated. Use <.form for={to_form(@changeset)}> instead.' && exit 2; fi; if grep -qE 'live_redirect|live_patch' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '🚫 live_redirect/live_patch are deprecated. Use <.link navigate={path}> or push_navigate/push_patch instead.' && exit 2; fi",
+            "description": "Block deprecated Phoenix components and functions"
+          },
+          {
+            "type": "command",
+            "command": "if grep -qE 'auto_upload:\\s*true' \"$CLAUDE_HOOK_FILE_PATH\" 2>/dev/null; then echo '⚠️  auto_upload: true detected. This requires special handling with handle_progress/3. Most apps should use manual upload (remove auto_upload: true and add a submit button). See phoenix-uploads skill for details.' && exit 1; fi",
+            "description": "Warn on auto_upload usage"
           }
         ]
       }
