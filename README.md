@@ -89,44 +89,46 @@ See [CHANGELOG.md](CHANGELOG.md) for full release notes and version history.
 
 ---
 
-### Method 1: Claude Code Plugin (Easiest)
+### Method 1: Claude Code Plugin (Recommended)
 
 **In your terminal (CLI commands):**
 
 ```bash
-# Add the marketplace
+# Step 1: Add the marketplace (first time only)
 claude plugin marketplace add j-morgan6/elixir-claude-optimization
 
-# Install the plugin at user scope (applies to all projects)
-claude plugin install elixir-optimization --scope user
+# Step 2: Update marketplace cache to get latest version
+claude plugin marketplace update elixir-claude-optimization
 
-# Verify installation
+# Step 3: Install the plugin at user scope (applies to all projects)
+# IMPORTANT: Must include @elixir-claude-optimization to specify the marketplace
+claude plugin install elixir-optimization@elixir-claude-optimization --scope user
+
+# Step 4: Verify installation and version
 claude plugin list
-# You should see: elixir-optimization@elixir-claude-optimization (enabled)
+# You should see: elixir-optimization@elixir-claude-optimization
+# Version should be 1.1.2 or higher
 ```
 
 **OR in a Claude Code session (slash commands):**
 
 ```bash
-# Add the marketplace
+# Step 1: Add the marketplace (first time only)
 /plugin marketplace add j-morgan6/elixir-claude-optimization
 
-# Install the plugin
-/plugin install elixir-optimization --scope user
+# Step 2: Update marketplace cache
+/plugin marketplace update elixir-claude-optimization
 
-# Verify
+# Step 3: Install the plugin
+/plugin install elixir-optimization@elixir-claude-optimization --scope user
+
+# Step 4: Verify
 /plugin list
 ```
 
 **Scope Options:**
 - `--scope user` (recommended) - Available in all your projects
 - `--scope project` - Only available in current project
-
-**Alternative shorthand:**
-```bash
-# Install directly with marketplace specified
-claude plugin install elixir-optimization@elixir-claude-optimization --scope user
-```
 
 This will install all skills, hooks, and agent documentation automatically.
 
