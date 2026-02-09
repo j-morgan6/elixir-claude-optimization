@@ -53,17 +53,23 @@ Detailed reference material for complex tasks:
 
 If you already have the plugin installed, update to get the latest features:
 
-**Using Claude Code Plugin:**
+**Recommended: In a Claude Code session:**
 ```bash
-# IMPORTANT: First update the marketplace cache to see the latest version
+# Open the interactive plugin manager
+/plugin
+
+# Select "Marketplaces" → "elixir-claude-optimization" → "Update"
+# Then install/update the plugin from the menu
+# Verify version shows 1.1.2 or higher
+```
+
+**Alternative: Terminal commands:**
+```bash
+# Update the marketplace cache to see the latest version
 claude plugin marketplace update elixir-claude-optimization
 
-# Then update the plugin (note: must include @marketplace-name)
+# Update the plugin (must include @marketplace-name)
 claude plugin update elixir-optimization@elixir-claude-optimization
-
-# Or reinstall to ensure clean update
-claude plugin uninstall elixir-optimization
-claude plugin install elixir-optimization@elixir-claude-optimization --scope user
 
 # Verify you have the latest version
 claude plugin list
@@ -91,7 +97,23 @@ See [CHANGELOG.md](CHANGELOG.md) for full release notes and version history.
 
 ### Method 1: Claude Code Plugin (Recommended)
 
-**In your terminal (CLI commands):**
+**In a Claude Code session (slash commands) - RECOMMENDED:**
+
+```bash
+# Step 1: Add the marketplace (first time only)
+/plugin marketplace add j-morgan6/elixir-claude-optimization
+
+# Step 2: Use the interactive plugin manager
+/plugin
+
+# This opens an interactive menu where you can:
+# - Select the elixir-claude-optimization marketplace
+# - Update the marketplace to get the latest version
+# - Install/update the elixir-optimization plugin
+# - Verify you have version 1.1.2 or higher
+```
+
+**Alternative: Terminal CLI commands:**
 
 ```bash
 # Step 1: Add the marketplace (first time only)
@@ -108,22 +130,6 @@ claude plugin install elixir-optimization@elixir-claude-optimization --scope use
 claude plugin list
 # You should see: elixir-optimization@elixir-claude-optimization
 # Version should be 1.1.2 or higher
-```
-
-**OR in a Claude Code session (slash commands):**
-
-```bash
-# Step 1: Add the marketplace (first time only)
-/plugin marketplace add j-morgan6/elixir-claude-optimization
-
-# Step 2: Update marketplace cache
-/plugin marketplace update elixir-claude-optimization
-
-# Step 3: Install the plugin
-/plugin install elixir-optimization@elixir-claude-optimization --scope user
-
-# Step 4: Verify
-/plugin list
 ```
 
 **Scope Options:**
