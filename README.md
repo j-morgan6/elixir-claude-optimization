@@ -1,6 +1,6 @@
 # Elixir Claude Code Optimization
 
-**Version:** 1.1.1 | [Changelog](CHANGELOG.md)
+**Version:** 1.1.2 | [Changelog](CHANGELOG.md)
 
 A comprehensive configuration package for Claude Code that transforms it into an Elixir and Phoenix LiveView expert. This setup includes skills, hooks, and agent documentation that enforce best practices and provide intelligent guidance for idiomatic Elixir development.
 
