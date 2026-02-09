@@ -49,18 +49,24 @@ Detailed reference material for complex tasks:
 
 ## Installation
 
-### Upgrading from v1.0.0 to v1.1.0
+### Upgrading to Latest Version
 
 If you already have the plugin installed, update to get the latest features:
 
 **Using Claude Code Plugin:**
 ```bash
-# Update the plugin to latest version
+# IMPORTANT: First update the marketplace cache to see the latest version
+claude plugin marketplace update elixir-claude-optimization
+
+# Then update the plugin
 claude plugin update elixir-optimization
 
 # Or reinstall to ensure clean update
 claude plugin uninstall elixir-optimization
 claude plugin install elixir-optimization@elixir-claude-optimization --scope user
+
+# Verify you have the latest version
+claude plugin list
 ```
 
 **Using Install Script:**
@@ -73,13 +79,13 @@ git pull origin main
 ./install.sh
 ```
 
-**What's New in v1.1.0:**
-- New **skill-discovery** meta-skill for systematic skill selection
-- All skills updated with mandatory "INVOKE BEFORE" language
-- File pattern detection for automatic skill suggestions
-- 50%+ expected increase in skill usage
+**Latest Updates:**
+- ✅ Fixed marketplace version detection issue
+- ✅ New **skill-discovery** meta-skill for systematic skill selection
+- ✅ All skills updated with mandatory "INVOKE BEFORE" language
+- ✅ File pattern detection for automatic skill suggestions
 
-See [CHANGELOG.md](CHANGELOG.md) for full details.
+See [CHANGELOG.md](CHANGELOG.md) for full release notes and version history.
 
 ---
 
