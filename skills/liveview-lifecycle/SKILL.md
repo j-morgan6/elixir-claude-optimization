@@ -1,6 +1,12 @@
 ---
 name: liveview-lifecycle
-description: Use when working with LiveView rendering phases and lifecycle. Covers static vs connected rendering, safe assign access, mount initialization, and avoiding KeyError crashes.
+description: INVOKE BEFORE working with LiveView rendering phases. REQUIRED for understanding static vs connected rendering, safe assign access with assigns[:key], mount initialization, and preventing KeyError crashes. Critical for avoiding common LiveView bugs.
+file_patterns:
+  - "**/live/**/*.ex"
+  - "**/*_live.ex"
+  - "**/*.html.heex"
+  - "**/live/**/*.html.heex"
+auto_suggest: true
 ---
 
 # LiveView Rendering Lifecycle

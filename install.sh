@@ -53,14 +53,16 @@ fi
 # Install skills (must be in subdirectories with SKILL.md filename)
 echo -e "${YELLOW}Installing skills...${NC}"
 mkdir -p "$CLAUDE_DIR/skills"
+SKILL_COUNT=0
 for skill_dir in "$SOURCE_DIR/skills"/*; do
     if [ -d "$skill_dir" ]; then
         skill_name=$(basename "$skill_dir")
         mkdir -p "$CLAUDE_DIR/skills/$skill_name"
         cp "$skill_dir/SKILL.md" "$CLAUDE_DIR/skills/$skill_name/SKILL.md"
+        SKILL_COUNT=$((SKILL_COUNT + 1))
     fi
 done
-echo -e "${GREEN}✓ Installed 4 skills${NC}"
+echo -e "${GREEN}✓ Installed $SKILL_COUNT skills${NC}"
 
 # Install hooks (merge into settings.json)
 echo -e "${YELLOW}Installing hooks into settings.json...${NC}"
@@ -109,7 +111,7 @@ echo ""
 echo -e "${GREEN}Installation complete!${NC}"
 echo ""
 echo "Installed components:"
-echo "  • 7 Skills (elixir-patterns, phoenix-liveview, ecto-database, error-handling, phoenix-uploads, phoenix-static-files, liveview-lifecycle)"
+echo "  • 8 Skills (skill-discovery, elixir-patterns, phoenix-liveview, ecto-database, error-handling, phoenix-uploads, phoenix-static-files, liveview-lifecycle)"
 echo "  • 10 Hooks (missing-impl, hardcoded-paths, hardcoded-sizes, static-paths, deprecated-components, nested-if, inefficient-enum, string-concat, auto-upload)"
 echo "  • 4 Agent docs (project-structure, liveview-checklist, ecto-conventions, testing-guide)"
 echo ""
