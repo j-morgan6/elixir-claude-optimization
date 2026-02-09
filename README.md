@@ -58,8 +58,8 @@ If you already have the plugin installed, update to get the latest features:
 # IMPORTANT: First update the marketplace cache to see the latest version
 claude plugin marketplace update elixir-claude-optimization
 
-# Then update the plugin
-claude plugin update elixir-optimization
+# Then update the plugin (note: must include @marketplace-name)
+claude plugin update elixir-optimization@elixir-claude-optimization
 
 # Or reinstall to ensure clean update
 claude plugin uninstall elixir-optimization
@@ -80,10 +80,10 @@ git pull origin main
 ```
 
 **Latest Updates:**
-- ✅ Fixed marketplace version detection issue
-- ✅ New **skill-discovery** meta-skill for systematic skill selection
-- ✅ All skills updated with mandatory "INVOKE BEFORE" language
-- ✅ File pattern detection for automatic skill suggestions
+- Fixed marketplace version detection issue
+- New **skill-discovery** meta-skill for systematic skill selection
+- All skills updated with mandatory "INVOKE BEFORE" language
+- File pattern detection for automatic skill suggestions
 
 See [CHANGELOG.md](CHANGELOG.md) for full release notes and version history.
 
