@@ -1,6 +1,6 @@
 {
   "name": "elixir-optimization",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Comprehensive Elixir and Phoenix LiveView optimization with skills, hooks, and agent documentation for idiomatic code",
   "author": {
     "name": "Jose R",
