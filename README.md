@@ -1,10 +1,10 @@
 # Elixir Claude Code Optimization
 
-**Version:** 1.1.0 | [Changelog](CHANGELOG.md) | [Roadmap](ROADMAP.md) | [Release Process](RELEASE.md)
+**Version:** 1.1.0 | [Changelog](CHANGELOG.md)
 
 A comprehensive configuration package for Claude Code that transforms it into an Elixir and Phoenix LiveView expert. This setup includes skills, hooks, and agent documentation that enforce best practices and provide intelligent guidance for idiomatic Elixir development.
 
-> **v1.1.0 Released!** Skill discoverability improvements with mandatory "INVOKE BEFORE" language, file pattern detection, and new skill-discovery meta-skill. [See what's new](#upgrading-from-v100-to-v110) | [Full changelog](CHANGELOG.md)
+> **v1.1.0 Released!** Skill discoverability improvements with mandatory "INVOKE BEFORE" language, file pattern detection, and new skill-discovery meta-skill. [See what's new](#upgrading-from-v100-to-v110)
 
 ## What's Included
 

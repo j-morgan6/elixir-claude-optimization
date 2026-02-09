@@ -13,3 +13,7 @@
 # Note: These files are stored outside this repo
 docs/analysis/
 docs/feedback/
+
+# Internal planning documents (not for public repo)
+ROADMAP.md
+RELEASE.md
