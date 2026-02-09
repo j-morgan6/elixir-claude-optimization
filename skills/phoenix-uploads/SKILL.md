@@ -1,6 +1,11 @@
 ---
 name: phoenix-uploads
-description: Use when implementing file upload functionality with Phoenix LiveView. Covers upload configuration, manual vs auto-upload patterns, error handling, and static file serving.
+description: INVOKE BEFORE implementing file upload functionality. REQUIRED for allow_upload configuration, consume_uploaded_entries, manual vs auto-upload patterns, error handling, and static file serving integration. Essential for all file upload features.
+file_patterns:
+  - "**/live/**/*.ex"
+  - "**/*_live.ex"
+  - "**/uploads/**/*.ex"
+auto_suggest: true
 ---
 
 # Phoenix LiveView File Upload Patterns

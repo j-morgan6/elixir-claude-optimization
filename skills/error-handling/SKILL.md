@@ -1,6 +1,12 @@
 ---
 name: error-handling
-description: Use when handling errors in Elixir. Covers tagged tuples, with statements, try/rescue, bang functions, supervision trees, and error boundaries in LiveView.
+description: INVOKE BEFORE implementing error handling in Elixir. REQUIRED for tagged tuples, with statements, try/rescue, bang functions, supervision trees, and LiveView error boundaries. Essential for robust error handling.
+file_patterns:
+  - "**/*.ex"
+  - "**/*.exs"
+  - "**/supervisor.ex"
+  - "**/application.ex"
+auto_suggest: true
 ---
 
 # Elixir Error Handling Patterns

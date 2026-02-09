@@ -1,11 +1,16 @@
 # Elixir Claude Code Optimization
 
+**Version:** 1.1.0 | [Changelog](CHANGELOG.md) | [Roadmap](ROADMAP.md) | [Release Process](RELEASE.md)
+
 A comprehensive configuration package for Claude Code that transforms it into an Elixir and Phoenix LiveView expert. This setup includes skills, hooks, and agent documentation that enforce best practices and provide intelligent guidance for idiomatic Elixir development.
+
+> **v1.1.0 Released!** Skill discoverability improvements with mandatory "INVOKE BEFORE" language, file pattern detection, and new skill-discovery meta-skill. [See what's new](#upgrading-from-v100-to-v110) | [Full changelog](CHANGELOG.md)
 
 ## What's Included
 
-### 🎓 Skills (7 files)
+### Skills (8 files)
 Domain expertise that teaches Claude about Elixir/Phoenix patterns:
+- **skill-discovery** - Meta-skill for identifying which skills to invoke (INVOKE FIRST)
 - **elixir-patterns** - Pattern matching, pipes, with statements, naming conventions
 - **phoenix-liveview** - LiveView lifecycle, events, uploads, PubSub, navigation
 - **ecto-database** - Schemas, changesets, queries, associations, migrations
@@ -14,7 +19,9 @@ Domain expertise that teaches Claude about Elixir/Phoenix patterns:
 - **phoenix-static-files** - Static paths configuration, serving uploaded files, troubleshooting
 - **liveview-lifecycle** - Render phases, safe assign access, mount initialization
 
-### 🔒 Hooks (10 shell commands in settings.json)
+**New in v1.1.0:** All skills now use mandatory "INVOKE BEFORE" language and include file pattern detection for automatic suggestions.
+
+### Hooks (10 shell commands in settings.json)
 Active enforcement rules that catch anti-patterns in real-time:
 
 **Blocking (exit 2 - prevents action):**
@@ -30,17 +37,51 @@ Active enforcement rules that catch anti-patterns in real-time:
 - **string-concatenation** - Warns about string concatenation in loops
 - **auto-upload-warning** - Warns when auto_upload: true is detected
 
-### 📚 Agent Documentation (4 files)
+### Agent Documentation (4 files)
 Detailed reference material for complex tasks:
 - **project-structure.md** - Directory layout and context boundaries
 - **liveview-checklist.md** - Step-by-step LiveView development checklist
 - **ecto-conventions.md** - Comprehensive Ecto patterns and best practices
 - **testing-guide.md** - Testing patterns for contexts, LiveViews, and schemas
 
-### 📋 Project Template
+### Project Template
 - **CLAUDE.md.template** - Project-specific instructions template
 
 ## Installation
+
+### Upgrading from v1.0.0 to v1.1.0
+
+If you already have the plugin installed, update to get the latest features:
+
+**Using Claude Code Plugin:**
+```bash
+# Update the plugin to latest version
+claude plugin update elixir-optimization
+
+# Or reinstall to ensure clean update
+claude plugin uninstall elixir-optimization
+claude plugin install elixir-optimization@elixir-claude-optimization --scope user
+```
+
+**Using Install Script:**
+```bash
+# Pull latest changes if you cloned the repo
+cd ~/path/to/elixir-claude-optimization
+git pull origin main
+
+# Run install script again (it will update files)
+./install.sh
+```
+
+**What's New in v1.1.0:**
+- New **skill-discovery** meta-skill for systematic skill selection
+- All skills updated with mandatory "INVOKE BEFORE" language
+- File pattern detection for automatic skill suggestions
+- 50%+ expected increase in skill usage
+
+See [CHANGELOG.md](CHANGELOG.md) for full details.
+
+---
 
 ### Method 1: Claude Code Plugin (Easiest)
 
@@ -173,24 +214,24 @@ def process(_), do: :inactive
 ## What This Optimizes
 
 ### Code Quality
-- ✅ **Blocks** callbacks without @impl true (prevents compilation)
-- ✅ **Blocks** hardcoded file paths and sizes (prevents runtime issues)
-- ✅ **Warns** about nested if/else (suggests pattern matching)
-- ✅ **Warns** about inefficient Enum chains (suggests for comprehensions)
-- ✅ **Warns** about string concatenation in loops (suggests IO lists)
+- **Blocks** callbacks without @impl true (prevents compilation)
+- **Blocks** hardcoded file paths and sizes (prevents runtime issues)
+- **Warns** about nested if/else (suggests pattern matching)
+- **Warns** about inefficient Enum chains (suggests for comprehensions)
+- **Warns** about string concatenation in loops (suggests IO lists)
 
 ### Developer Experience
-- 🎯 Proactive guidance on Elixir idioms
-- 🎯 Real-time feedback on code quality
-- 🎯 Detailed checklists for complex features
-- 🎯 Consistent conventions across projects
-- 🎯 Reduced iterations and corrections
+- Proactive guidance on Elixir idioms
+- Real-time feedback on code quality
+- Detailed checklists for complex features
+- Consistent conventions across projects
+- Reduced iterations and corrections
 
 ### Learning
-- 📖 Clear explanations of "why" not just "what"
-- 📖 Links to relevant patterns and best practices
-- 📖 Progressive disclosure of complexity
-- 📖 Examples of idiomatic vs non-idiomatic code
+- Clear explanations of "why" not just "what"
+- Links to relevant patterns and best practices
+- Progressive disclosure of complexity
+- Examples of idiomatic vs non-idiomatic code
 
 ## Comparison Project
 
@@ -270,14 +311,36 @@ patterns:
 ### Modifying Existing Rules
 Edit any skill or hook file - changes take effect on next Claude Code restart
 
+## Checking Your Version
+
+```bash
+# Check installed plugin version
+claude plugin list
+
+# Or check the VERSION file if you cloned the repo
+cat ~/.claude/skills/elixir-patterns/SKILL.md | head -5
+# Look for "INVOKE BEFORE" language = v1.1.0+
+# Look for "Use when" language = v1.0.0
+```
+
 ## Uninstall
 
+**Using Claude Code Plugin:**
+```bash
+claude plugin uninstall elixir-optimization
+```
+
+**Manual Uninstall:**
 ```bash
 # Remove skills
 rm -rf ~/.claude/skills/elixir-patterns
 rm -rf ~/.claude/skills/phoenix-liveview
 rm -rf ~/.claude/skills/ecto-database
 rm -rf ~/.claude/skills/error-handling
+rm -rf ~/.claude/skills/phoenix-uploads
+rm -rf ~/.claude/skills/phoenix-static-files
+rm -rf ~/.claude/skills/liveview-lifecycle
+rm -rf ~/.claude/skills/skill-discovery
 
 # Remove hooks (manually edit ~/.claude/settings.json and remove the "hooks" section)
 # Or restore backup: mv ~/.claude/settings.json.backup ~/.claude/settings.json

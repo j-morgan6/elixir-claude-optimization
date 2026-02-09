@@ -1,6 +1,12 @@
 ---
 name: ecto-database
-description: Use when working with Ecto and database operations. Covers schemas, changesets, queries, associations, preloading, transactions, and migrations.
+description: INVOKE BEFORE modifying any Ecto schema, query, or migration. REQUIRED for schemas, changesets, queries, associations, preloading, transactions, and migrations. Essential for all database operations.
+file_patterns:
+  - "**/schemas/**/*.ex"
+  - "**/migrations/**/*.exs"
+  - "**/repo.ex"
+  - "**/*_context.ex"
+auto_suggest: true
 ---
 
 # Ecto Database Patterns

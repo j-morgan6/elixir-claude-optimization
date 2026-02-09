@@ -1,6 +1,12 @@
 ---
 name: phoenix-static-files
-description: Use when serving uploaded files, assets, or any static content. Covers static_paths configuration, Plug.Static setup, and troubleshooting file serving issues.
+description: INVOKE BEFORE serving uploaded files or static content. REQUIRED for static_paths configuration, Plug.Static setup, and troubleshooting 404 errors on static files. Critical when files uploaded but not accessible via HTTP.
+file_patterns:
+  - "**/endpoint.ex"
+  - "**/*_web.ex"
+  - "**/router.ex"
+  - "**/uploads/**/*.ex"
+auto_suggest: true
 ---
 
 # Phoenix Static File Serving

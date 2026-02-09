@@ -1,6 +1,10 @@
 ---
 name: elixir-patterns
-description: Use when writing Elixir code. Covers pattern matching, pipe operators, with statements, guards, list comprehensions, and Elixir naming conventions.
+description: INVOKE BEFORE writing any Elixir code. REQUIRED for pattern matching, pipe operators, with statements, guards, list comprehensions, and naming conventions. Use this skill to ensure idiomatic Elixir patterns.
+file_patterns:
+  - "**/*.ex"
+  - "**/*.exs"
+auto_suggest: true
 ---
 
 # Elixir Patterns and Conventions

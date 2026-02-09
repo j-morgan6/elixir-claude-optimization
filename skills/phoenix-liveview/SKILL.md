@@ -1,6 +1,12 @@
 ---
 name: phoenix-liveview
-description: Use when working with Phoenix LiveView. Covers lifecycle, mount/handle_event/handle_info callbacks, file uploads, navigation, PubSub, and LiveView testing.
+description: INVOKE BEFORE implementing any LiveView feature. REQUIRED for mount, handle_event, handle_info callbacks, file uploads, navigation, PubSub, streams, and LiveView testing. Essential for all LiveView development.
+file_patterns:
+  - "**/live/**/*.ex"
+  - "**/*_live.ex"
+  - "**/*.html.heex"
+  - "**/live/**/*.html.heex"
+auto_suggest: true
 ---
 
 # Phoenix LiveView Patterns
