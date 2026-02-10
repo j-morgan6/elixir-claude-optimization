@@ -49,40 +49,37 @@ Detailed reference material for complex tasks:
 
 ## Installation
 
-### Upgrading to Latest Version
+> **Note:** Official marketplace publication is in progress. Once available, installation will be even simpler through the official Claude Code marketplace.
 
-If you already have the plugin installed, update to get the latest features:
+### Installing for the First Time
 
-**Recommended: In a Claude Code session:**
+In a Claude Code session, use the interactive plugin manager:
+
+```bash
+# Step 1: Add the marketplace (first time only)
+/plugin marketplace add j-morgan6/elixir-claude-optimization
+
+# Step 2: Open the interactive plugin manager
+/plugin
+
+# This opens an interactive menu where you can:
+# - Select the elixir-claude-optimization marketplace
+# - Install the elixir-optimization plugin
+# - Choose scope (user = all projects, project = current only)
+# - Verify you have version 1.1.2 or higher
+```
+
+### Updating to Latest Version
+
+If you already have the plugin installed:
+
 ```bash
 # Open the interactive plugin manager
 /plugin
 
 # Select "Marketplaces" → "elixir-claude-optimization" → "Update"
-# Then install/update the plugin from the menu
+# Then update the plugin from the menu
 # Verify version shows 1.1.2 or higher
-```
-
-**Alternative: Terminal commands:**
-```bash
-# Update the marketplace cache to see the latest version
-claude plugin marketplace update elixir-claude-optimization
-
-# Update the plugin (must include @marketplace-name)
-claude plugin update elixir-optimization@elixir-claude-optimization
-
-# Verify you have the latest version
-claude plugin list
-```
-
-**Using Install Script:**
-```bash
-# Pull latest changes if you cloned the repo
-cd ~/path/to/elixir-claude-optimization
-git pull origin main
-
-# Run install script again (it will update files)
-./install.sh
 ```
 
 **Latest Updates:**
@@ -92,92 +89,6 @@ git pull origin main
 - File pattern detection for automatic skill suggestions
 
 See [CHANGELOG.md](CHANGELOG.md) for full release notes and version history.
-
----
-
-### Method 1: Claude Code Plugin (Recommended)
-
-**In a Claude Code session (slash commands) - RECOMMENDED:**
-
-```bash
-# Step 1: Add the marketplace (first time only)
-/plugin marketplace add j-morgan6/elixir-claude-optimization
-
-# Step 2: Use the interactive plugin manager
-/plugin
-
-# This opens an interactive menu where you can:
-# - Select the elixir-claude-optimization marketplace
-# - Update the marketplace to get the latest version
-# - Install/update the elixir-optimization plugin
-# - Verify you have version 1.1.2 or higher
-```
-
-**Alternative: Terminal CLI commands:**
-
-```bash
-# Step 1: Add the marketplace (first time only)
-claude plugin marketplace add j-morgan6/elixir-claude-optimization
-
-# Step 2: Update marketplace cache to get latest version
-claude plugin marketplace update elixir-claude-optimization
-
-# Step 3: Install the plugin at user scope (applies to all projects)
-# IMPORTANT: Must include @elixir-claude-optimization to specify the marketplace
-claude plugin install elixir-optimization@elixir-claude-optimization --scope user
-
-# Step 4: Verify installation and version
-claude plugin list
-# You should see: elixir-optimization@elixir-claude-optimization
-# Version should be 1.1.2 or higher
-```
-
-**Scope Options:**
-- `--scope user` (recommended) - Available in all your projects
-- `--scope project` - Only available in current project
-
-This will install all skills, hooks, and agent documentation automatically.
-
-### Method 2: Quick Install Script
-
-```bash
-curl -sL https://raw.githubusercontent.com/j-morgan6/elixir-claude-optimization/main/install.sh | bash
-```
-
-### Method 3: Manual Installation
-
-1. Clone this repository:
-```bash
-git clone https://github.com/j-morgan6/elixir-claude-optimization.git
-cd elixir-claude-optimization
-```
-
-2. Copy files to your Claude configuration directory:
-```bash
-# Install skills (must be in subdirectories)
-mkdir -p ~/.claude/skills
-cp -r skills/* ~/.claude/skills/
-
-# Install hooks (merge into settings.json)
-# If you have jq installed:
-jq -s '.[0] * .[1]' ~/.claude/settings.json hooks-settings.json > ~/.claude/settings.json.tmp
-mv ~/.claude/settings.json.tmp ~/.claude/settings.json
-
-# Or manually merge hooks-settings.json into ~/.claude/settings.json
-# See INSTALL-HOOKS.md for details
-
-# Install agent documentation
-mkdir -p ~/.claude/agents
-cp agents/* ~/.claude/agents/
-```
-
-3. (Optional) Copy CLAUDE.md template to your project:
-```bash
-cp CLAUDE.md.template /path/to/your/project/CLAUDE.md
-# Edit CLAUDE.md to match your project specifics
-```
-
-4. Restart Claude Code to load the configuration
 
 ## Usage
 
@@ -257,37 +168,29 @@ This optimization package was created as part of a comparison study to measure t
 
 ## Project-Specific Setup
 
-For project-specific instructions:
+For project-specific instructions, you can create a `CLAUDE.md` file in your project root with:
+- Your app name and description
+- Project-specific contexts
+- Custom commands and workflows
+- Team conventions
 
-1. Copy `CLAUDE.md.template` to your project root as `CLAUDE.md`
-2. Customize it with:
-   - Your app name and description
-   - Project-specific contexts
-   - Custom commands and workflows
-   - Team conventions
-
-Example:
-```bash
-cp ~/.claude/agents/../CLAUDE.md.template ./CLAUDE.md
-# Edit CLAUDE.md with your project details
-git add CLAUDE.md
-git commit -m "Add Claude Code project configuration"
-```
+This file will be automatically loaded by Claude Code when working in your project.
 
 ## File Structure
 
 ```
 elixir-claude-optimization/
 ├── README.md                          # This file
-├── install.sh                         # Automated installer
-├── CLAUDE.md.template                 # Project template
-├── skills/                            # Elixir expertise
+├── skills/                            # Elixir expertise (8 skills)
+│   ├── skill-discovery/SKILL.md
 │   ├── elixir-patterns/SKILL.md
 │   ├── phoenix-liveview/SKILL.md
 │   ├── ecto-database/SKILL.md
-│   └── error-handling/SKILL.md
-├── hooks-settings.json                # Hook configuration for settings.json
-├── INSTALL-HOOKS.md                   # Hook installation guide
+│   ├── error-handling/SKILL.md
+│   ├── phoenix-uploads/SKILL.md
+│   ├── phoenix-static-files/SKILL.md
+│   └── liveview-lifecycle/SKILL.md
+├── hooks-settings.json                # Hook configuration
 └── agents/                            # Reference documentation
     ├── project-structure.md
     ├── liveview-checklist.md
@@ -303,67 +206,37 @@ elixir-claude-optimization/
 
 ## Customization
 
-All files are Markdown or YAML - easy to modify for your needs:
+After installation via the plugin manager, all configuration files are installed to `~/.claude/`:
+- Skills: `~/.claude/skills/`
+- Hooks: `~/.claude/settings.json`
+- Agent docs: `~/.claude/agents/`
+
+You can customize these files directly. Changes take effect after restarting Claude Code.
 
 ### Adding Custom Skills
-Create new `.md` files in `~/.claude/skills/` with your patterns
-
-### Adding Custom Hooks
-Create new `.yml` files in `~/.claude/hooks/`:
-
-```yaml
----
-name: my-custom-hook
-description: What this checks
-action: warn  # or "block"
-patterns:
-  - regex: 'pattern'
-    message: |
-      Explanation and fix
-```
+Create new directories with `SKILL.md` files in `~/.claude/skills/`
 
 ### Modifying Existing Rules
 Edit any skill or hook file - changes take effect on next Claude Code restart
 
 ## Checking Your Version
 
+In a Claude Code session:
 ```bash
-# Check installed plugin version
-claude plugin list
+/plugin
 
-# Or check the VERSION file if you cloned the repo
-cat ~/.claude/skills/elixir-patterns/SKILL.md | head -5
-# Look for "INVOKE BEFORE" language = v1.1.0+
-# Look for "Use when" language = v1.0.0
+# Or check version in the plugin list
+# Navigate to your installed plugins and verify version 1.1.2 or higher
 ```
 
 ## Uninstall
 
-**Using Claude Code Plugin:**
+In a Claude Code session:
 ```bash
-claude plugin uninstall elixir-optimization
-```
+/plugin
 
-**Manual Uninstall:**
-```bash
-# Remove skills
-rm -rf ~/.claude/skills/elixir-patterns
-rm -rf ~/.claude/skills/phoenix-liveview
-rm -rf ~/.claude/skills/ecto-database
-rm -rf ~/.claude/skills/error-handling
-rm -rf ~/.claude/skills/phoenix-uploads
-rm -rf ~/.claude/skills/phoenix-static-files
-rm -rf ~/.claude/skills/liveview-lifecycle
-rm -rf ~/.claude/skills/skill-discovery
-
-# Remove hooks (manually edit ~/.claude/settings.json and remove the "hooks" section)
-# Or restore backup: mv ~/.claude/settings.json.backup ~/.claude/settings.json
-
-# Remove agent docs
-rm -rf ~/.claude/agents/project-structure.md
-rm -rf ~/.claude/agents/liveview-checklist.md
-rm -rf ~/.claude/agents/ecto-conventions.md
-rm -rf ~/.claude/agents/testing-guide.md
+# Navigate to installed plugins
+# Select elixir-optimization and choose "Uninstall"
 ```
 
 ## Contributing
