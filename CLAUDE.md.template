@@ -62,23 +62,30 @@ Configuration lives in `config/`:
 Application.get_env(:your_app, :config_key)
 ```
 
+## Elixir Development Rules (MANDATORY)
+
+Before writing or editing ANY .ex, .exs, or .heex file, you MUST invoke the relevant
+skill from the elixir-phoenix-guide plugin:
+
+- **Writing Elixir code (.ex, .exs)** → invoke `elixir-phoenix-guide:elixir-essentials`
+- **Working with LiveView or templates (.heex)** → invoke `elixir-phoenix-guide:phoenix-liveview-essentials`
+- **Database work (schemas, migrations, queries)** → invoke `elixir-phoenix-guide:ecto-essentials`
+- **File uploads** → invoke `elixir-phoenix-guide:phoenix-uploads`
+
+This is not optional. Do not rationalize skipping this step. Invoke the skill, read the
+rules section, then proceed with implementation.
+
 ## Code Style and Conventions
 
 ### Pattern Matching First
 
 Prefer pattern matching and multiple function heads over if/else statements.
 
-See: `~/.claude/skills/elixir-patterns.md`
-
 ### Error Handling
 
 Use `with` statements for sequential operations that can fail.
 
-See: `~/.claude/skills/error-handling.md`
-
 ### LiveView Development
-
-When working on LiveView modules, consult `~/.claude/agents/liveview-checklist.md`.
 
 **Key points:**
 - Always add `@impl true` before callbacks
@@ -87,8 +94,6 @@ When working on LiveView modules, consult `~/.claude/agents/liveview-checklist.m
 - Return proper tuples: `{:noreply, socket}` or `{:ok, socket}`
 
 ### Database Operations
-
-Follow Ecto conventions in `~/.claude/agents/ecto-conventions.md`.
 
 **Key points:**
 - Use changesets for all inserts/updates
@@ -107,12 +112,12 @@ Consult these documents when working on specific tasks:
 
 ## Skills
 
-Skills are automatically loaded based on context. They contain:
+The elixir-phoenix-guide plugin provides essential skills that must be invoked:
 
-1. **elixir-patterns.md** - Pattern matching, pipes, with statements, naming
-2. **phoenix-liveview.md** - LiveView lifecycle, events, uploads, navigation
-3. **ecto-database.md** - Schemas, changesets, queries, migrations
-4. **error-handling.md** - Error tuples, with statements, supervisors
+1. **elixir-essentials** - Pattern matching, pipes, with statements, error handling, naming
+2. **phoenix-liveview-essentials** - LiveView lifecycle, events, rendering phases, navigation
+3. **ecto-essentials** - Schemas, changesets, queries, migrations, associations
+4. **phoenix-uploads** - File uploads and static file serving
 
 ## Hooks
 

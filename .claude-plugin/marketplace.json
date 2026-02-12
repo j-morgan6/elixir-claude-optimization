@@ -1,15 +1,15 @@
 {
-  "name": "elixir-claude-optimization",
+  "name": "elixir-phoenix-guide",
   "owner": {
     "name": "Jose R",
     "url": "https://github.com/j-morgan6"
   },
   "plugins": [
     {
-      "name": "elixir-optimization",
+      "name": "elixir-phoenix-guide",
       "source": "./",
-      "description": "Comprehensive Elixir and Phoenix LiveView optimization with skills, hooks, and agent documentation",
-      "version": "1.1.2"
+      "description": "Essential Elixir and Phoenix LiveView development guide with enforced skills, hooks, and patterns for idiomatic code",
+      "version": "1.2.0"
     }
   ]
 }
