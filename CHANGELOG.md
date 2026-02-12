@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Elixir Claude Optimization plugin will be documented in this file.
+All notable changes to the Elixir Phoenix Guide plugin will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,11 +8,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- New battle-tested skills from real development (v1.2.0)
 - Automated code quality detection system (v2.0.0)
 - Additional skills and hooks (v2.1.0)
 
 See [ROADMAP.md](ROADMAP.md) for detailed planning.
+
+## [1.2.0] - 2026-02-12
+
+### Breaking Changes
+- **Plugin renamed** from `elixir-optimization` to `elixir-phoenix-guide`
+  - Better reflects purpose: essential guide for ALL Elixir work, not just optimization
+  - Update marketplace references and installation commands
+  - Reinstall required for existing users
+
+### Changed
+- **Skills consolidated from 8 to 4** for reduced friction:
+  - `elixir-essentials` (merged elixir-patterns + error-handling)
+  - `phoenix-liveview-essentials` (merged phoenix-liveview + liveview-lifecycle)
+  - `ecto-essentials` (renamed from ecto-database)
+  - `phoenix-uploads` (merged in phoenix-static-files content)
+  - Removed skill-discovery meta-skill (no longer needed)
+
+- **RULES sections added** to all skills:
+  - 7-8 non-negotiable rules at the top of each skill
+  - Rules visible in 10 seconds, reference examples below
+  - Agents internalize rules, reference examples when needed
+
+- **Skill descriptions shortened and strengthened**:
+  - Changed from "INVOKE BEFORE" to "MANDATORY for ALL"
+  - Removed feature lists that enable rationalization
+  - Single-sentence descriptions using forceful language
+  - Example: "MANDATORY for ALL Elixir code changes. Invoke before writing any .ex or .exs file."
+
+- **CLAUDE.md template updated** with enforcement section:
+  - Mandatory rules block added to template
+  - Specifies exact skill invocation requirements per file type
+  - Explicit "not optional" language
+  - Projects adopting template get built-in enforcement
+
+- **Reminder hook added**:
+  - Non-blocking (exit 0) reminder on .ex/.exs/.heex writes
+  - Prompts agent to verify skill invocation
+  - Gentle nudge without preventing work
+
+### Documentation
+- **Metadata limitations documented**:
+  - README now clarifies auto_suggest and file_patterns are forward-looking
+  - Noted as pending Claude Code runtime support
+  - False expectation claims removed from v1.1.0 changelog references
+
+### Impact
+- Reduced cognitive load: 4 skills vs 8 means less choice paralysis
+- Improved adoption: MANDATORY language harder to rationalize away
+- Better enforcement: CLAUDE.md template + hooks + reminders create multiple touchpoints
+- Clearer purpose: "guide" name indicates this applies to ALL work, not just performance tuning
+
+### Migration Notes
+For existing users:
+1. Uninstall `elixir-optimization` plugin
+2. Install new `elixir-phoenix-guide` plugin from marketplace
+3. Update project CLAUDE.md files if using template
+4. Skill invocations use new names with same plugin prefix
 
 ## [1.1.0] - 2026-02-09
 

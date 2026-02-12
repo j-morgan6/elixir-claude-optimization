@@ -1,6 +1,6 @@
 ---
-name: ecto-database
-description: INVOKE BEFORE modifying any Ecto schema, query, or migration. REQUIRED for schemas, changesets, queries, associations, preloading, transactions, and migrations. Essential for all database operations.
+name: ecto-essentials
+description: MANDATORY for ALL database work. Invoke before modifying schemas, queries, or migrations.
 file_patterns:
   - "**/schemas/**/*.ex"
   - "**/migrations/**/*.exs"
@@ -9,7 +9,19 @@ file_patterns:
 auto_suggest: true
 ---
 
-# Ecto Database Patterns
+# Ecto Essentials
+
+## RULES — Follow these with no exceptions
+
+1. **Always use changesets** for inserts and updates — never pass raw maps to Repo
+2. **Preload associations** before accessing them — avoid N+1 queries
+3. **Use transactions** for multi-step operations that must succeed together
+4. **Add database constraints** (unique_index, foreign_key, check_constraint) AND changeset validations
+5. **Use contexts** for database access — never call Repo directly from web layer
+6. **Add indexes** on foreign keys and frequently queried fields
+7. **Use timestamps()** in every schema — track when records were created/updated
+
+---
 
 ## Schema Definition
 

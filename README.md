@@ -1,25 +1,23 @@
-# Elixir Claude Code Optimization
+# Elixir Phoenix Guide for Claude Code
 
 **Version:** 1.1.2 | [Changelog](CHANGELOG.md)
 
-A comprehensive configuration package for Claude Code that transforms it into an Elixir and Phoenix LiveView expert. This setup includes skills, hooks, and agent documentation that enforce best practices and provide intelligent guidance for idiomatic Elixir development.
+An essential development guide for Claude Code that ensures idiomatic Elixir and Phoenix LiveView code. This plugin includes enforced skills, hooks, and agent documentation that actively guide and validate your Elixir development workflow.
 
 > **v1.1.0 Released!** Skill discoverability improvements with mandatory "INVOKE BEFORE" language, file pattern detection, and new skill-discovery meta-skill.
 
 ## What's Included
 
-### Skills (8 files)
-Domain expertise that teaches Claude about Elixir/Phoenix patterns:
-- **skill-discovery** - Meta-skill for identifying which skills to invoke (INVOKE FIRST)
-- **elixir-patterns** - Pattern matching, pipes, with statements, naming conventions
-- **phoenix-liveview** - LiveView lifecycle, events, uploads, PubSub, navigation
-- **ecto-database** - Schemas, changesets, queries, associations, migrations
-- **error-handling** - Error tuples, with statements, supervisors, error boundaries
-- **phoenix-uploads** - File upload configuration, manual vs auto-upload, error handling
-- **phoenix-static-files** - Static paths configuration, serving uploaded files, troubleshooting
-- **liveview-lifecycle** - Render phases, safe assign access, mount initialization
+### Skills (4 essential files)
+Consolidated domain expertise with enforced patterns:
+- **elixir-essentials** - Core Elixir patterns: pattern matching, pipes, with statements, error handling
+- **phoenix-liveview-essentials** - Complete LiveView guide: lifecycle, events, rendering phases, state management
+- **ecto-essentials** - Database operations: schemas, changesets, queries, migrations, associations
+- **phoenix-uploads** - File uploads and static file serving workflow
 
-**New in v1.1.0:** All skills now use mandatory "INVOKE BEFORE" language and include file pattern detection for automatic suggestions.
+Each skill includes a RULES section with 7-8 non-negotiable patterns that must be followed.
+
+**Note on auto_suggest metadata:** Skills include `auto_suggest: true` and `file_patterns` metadata for future Claude Code enhancements. These fields are not currently active in the Claude Code runtime but are included for forward compatibility.
 
 ### Hooks (10 shell commands in settings.json)
 Active enforcement rules that catch anti-patterns in real-time:
@@ -30,7 +28,7 @@ Active enforcement rules that catch anti-patterns in real-time:
 - **hardcoded-sizes** - Blocks hardcoded file size limits
 - **static-paths-validator** - Blocks file references not in static_paths()
 - **deprecated-components** - Blocks deprecated Phoenix components (.flash_group, form_for, live_redirect)
-
+1
 **Warnings (exit 1 - shows warning, allows action):**
 - **nested-if-else** - Warns about nested if/else, suggests pattern matching
 - **inefficient-enum** - Warns about multiple Enum operations
@@ -57,14 +55,14 @@ In a Claude Code session, use the interactive plugin manager:
 
 ```bash
 # Step 1: Add the marketplace (first time only)
-/plugin marketplace add j-morgan6/elixir-claude-optimization
+/plugin marketplace add j-morgan6/elixir-phoenix-guide
 
 # Step 2: Open the interactive plugin manager
 /plugin
 
 # This opens an interactive menu where you can:
-# - Select the elixir-claude-optimization marketplace
-# - Install the elixir-optimization plugin
+# - Select the elixir-phoenix-guide marketplace
+# - Install the elixir-phoenix-guide plugin
 # - Choose scope (user = all projects, project = current only)
 # - Verify you have version 1.1.2 or higher
 ```
@@ -77,7 +75,7 @@ If you already have the plugin installed:
 # Open the interactive plugin manager
 /plugin
 
-# Select "Marketplaces" → "elixir-claude-optimization" → "Update"
+# Select "Marketplaces" → "elixir-phoenix-guide" → "Update"
 # Then update the plugin from the menu
 # Verify version shows 1.1.2 or higher
 ```
@@ -158,13 +156,9 @@ def process(_), do: :inactive
 - Progressive disclosure of complexity
 - Examples of idiomatic vs non-idiomatic code
 
-## Comparison Project
+## Why This Exists
 
-This optimization package was created as part of a comparison study to measure the effectiveness of Claude Code customization for Elixir development. See the [comparison results](#) for quantitative data on:
-- Hook interventions vs manual corrections
-- Iterations to working code
-- Code quality metrics (Credo scores)
-- Developer experience improvements
+This plugin was created to ensure Claude Code consistently produces idiomatic Elixir and Phoenix code by making best practices impossible to ignore, not just available. It combines enforced patterns, real-time validation, and comprehensive guidance for all Elixir development work.
 
 ## Project-Specific Setup
 
@@ -179,17 +173,13 @@ This file will be automatically loaded by Claude Code when working in your proje
 ## File Structure
 
 ```
-elixir-claude-optimization/
+elixir-phoenix-guide/
 ├── README.md                          # This file
-├── skills/                            # Elixir expertise (8 skills)
-│   ├── skill-discovery/SKILL.md
-│   ├── elixir-patterns/SKILL.md
-│   ├── phoenix-liveview/SKILL.md
-│   ├── ecto-database/SKILL.md
-│   ├── error-handling/SKILL.md
-│   ├── phoenix-uploads/SKILL.md
-│   ├── phoenix-static-files/SKILL.md
-│   └── liveview-lifecycle/SKILL.md
+├── skills/                            # Elixir expertise (4 essential skills)
+│   ├── elixir-essentials/SKILL.md
+│   ├── phoenix-liveview-essentials/SKILL.md
+│   ├── ecto-essentials/SKILL.md
+│   └── phoenix-uploads/SKILL.md
 ├── hooks-settings.json                # Hook configuration
 └── agents/                            # Reference documentation
     ├── project-structure.md
@@ -236,7 +226,7 @@ In a Claude Code session:
 /plugin
 
 # Navigate to installed plugins
-# Select elixir-optimization and choose "Uninstall"
+# Select elixir-phoenix-guide and choose "Uninstall"
 ```
 
 ## Contributing

@@ -1,7 +1,7 @@
 {
-  "name": "elixir-optimization",
-  "version": "1.1.2",
-  "description": "Comprehensive Elixir and Phoenix LiveView optimization with skills, hooks, and agent documentation for idiomatic code",
+  "name": "elixir-phoenix-guide",
+  "version": "1.2.0",
+  "description": "Essential Elixir and Phoenix LiveView development guide with enforced skills, hooks, and patterns for idiomatic code",
   "author": {
     "name": "Jose R",
     "url": "https://github.com/j-morgan6"
