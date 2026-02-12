@@ -1,10 +1,10 @@
 # Elixir Phoenix Guide for Claude Code
 
-**Version:** 1.1.2 | [Changelog](CHANGELOG.md)
+**Version:** 1.2.0 | [Changelog](CHANGELOG.md)
 
 An essential development guide for Claude Code that ensures idiomatic Elixir and Phoenix LiveView code. This plugin includes enforced skills, hooks, and agent documentation that actively guide and validate your Elixir development workflow.
 
-> **v1.1.0 Released!** Skill discoverability improvements with mandatory "INVOKE BEFORE" language, file pattern detection, and new skill-discovery meta-skill.
+> **v1.2.0 Released!** Major restructuring: Plugin renamed to `elixir-phoenix-guide`, skills consolidated from 8 to 4, RULES sections added, and enforcement strengthened. **Existing users must uninstall and reinstall** (see below).
 
 ## What's Included
 
