@@ -198,6 +198,7 @@ Install using any of the three methods in README.md. No migration needed.
 
 ---
 
-[Unreleased]: https://github.com/j-morgan6/elixir-claude-optimization/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/j-morgan6/elixir-claude-optimization/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/j-morgan6/elixir-claude-optimization/releases/tag/v1.0.0
+[Unreleased]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v1.1.2...v1.2.0
+[1.1.0]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/j-morgan6/elixir-phoenix-guide/releases/tag/v1.0.0

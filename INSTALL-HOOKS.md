@@ -9,7 +9,7 @@ The hooks for this plugin use Claude Code's native hook system (shell commands i
 Run the install script which will merge hooks into your settings:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/j-morgan6/elixir-claude-optimization/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/j-morgan6/elixir-phoenix-guide/main/install.sh | bash
 ```
 
 ### Method 2: Manual Installation

@@ -37,7 +37,7 @@ else
     TEMP_DIR=$(mktemp -d)
     cd "$TEMP_DIR"
 
-    REPO_URL="https://github.com/j-morgan6/elixir-claude-optimization"
+    REPO_URL="https://github.com/j-morgan6/elixir-phoenix-guide"
 
     if command -v git &> /dev/null; then
         git clone "$REPO_URL" .
