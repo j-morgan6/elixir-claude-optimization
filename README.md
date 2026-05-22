@@ -1,8 +1,8 @@
-# Elixir Phoenix Guide for Claude Code
+# Elixir Phoenix Guide for Claude Code and Codex
 
 **Version:** 2.3.1 | [Changelog](CHANGELOG.md)
 
-An essential development guide for Claude Code that ensures idiomatic Elixir and Phoenix LiveView code. This plugin includes enforced skills, context-aware hooks, automated code quality analysis, and agent documentation that actively guide and validate your Elixir development workflow.
+An essential development guide for Claude Code and Codex that ensures idiomatic Elixir and Phoenix LiveView code. This plugin includes enforced skills, context-aware hooks for Claude Code, automated code quality analysis, and agent documentation that actively guide and validate your Elixir development workflow.
 
 > **v2.3.1 Released!** Corrected LiveView assigns and test setup guidance based on community feedback. See [CHANGELOG.md](CHANGELOG.md) for details.
 
@@ -95,6 +95,18 @@ Detailed reference material for complex tasks:
 ## Installation
 
 > **Note:** Official marketplace publication is in progress. Once available, installation will be even simpler through the official Claude Code marketplace.
+
+### Codex
+
+To install the skills for the current Codex user:
+
+```bash
+./install-codex.sh
+```
+
+This copies all skill directories into `${CODEX_HOME:-~/.codex}/skills`. Restart Codex after installation so the skills are discovered.
+
+This repository also includes a Codex plugin manifest at `.codex-plugin/plugin.json` for plugin-based discovery.
 
 ### Installing for the First Time
 
