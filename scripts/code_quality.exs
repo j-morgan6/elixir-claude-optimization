@@ -277,7 +277,7 @@ defmodule CodeQuality do
       private_funs
       |> Enum.filter(fn {name, _def_line} ->
         call_pattern =
-          ~r/(?:(?<!\.)#{Regex.escape(name)}\(|&#{Regex.escape(name)}\/|\|>\s*#{Regex.escape(name)}\b)/
+          ~r/(?:(?<![.\w])#{Regex.escape(name)}\(|&#{Regex.escape(name)}\/|\|>\s*#{Regex.escape(name)}\b)/
 
         call_count =
           lines
