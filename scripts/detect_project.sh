@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Project Detection System for Elixir Phoenix Guide Plugin
 # Parses mix.exs to detect project characteristics that change hook behavior.
-# Writes cache to .elixir-phoenix-guide-project.json in project root.
+# Writes cache to ${CLAUDE_PLUGIN_DATA:-~/.claude/elixir-phoenix-guide}/cache/<sha of project root>.json
 
 set -euo pipefail
 
@@ -18,13 +18,18 @@ find_project_root() {
   return 1
 }
 
-PROJECT_ROOT=$(find_project_root 2>/dev/null) || exit 0
+PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(find_project_root 2>/dev/null || true)}"
+[ -n "$PROJECT_ROOT" ] || exit 0
 MIX_FILE="$PROJECT_ROOT/mix.exs"
-CACHE_FILE="$PROJECT_ROOT/.elixir-phoenix-guide-project.json"
 
 if [ ! -f "$MIX_FILE" ]; then
   exit 0
 fi
+
+CACHE_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/elixir-phoenix-guide}/cache"
+mkdir -p "$CACHE_DIR"
+KEY=$(printf '%s' "$PROJECT_ROOT" | shasum | cut -c1-12)
+CACHE_FILE="$CACHE_DIR/$KEY.json"
 
 # Detect Phoenix version from mix.exs deps
 detect_phoenix_version() {
@@ -97,7 +102,7 @@ HAS_LIVEVIEW=$(detect_liveview)
 ECTO_ADAPTER=$(detect_ecto_adapter)
 HAS_OBAN=$(detect_oban)
 HAS_ECTO=$(detect_ecto)
-APP_NAME=$(detect_app_name)
+APP_NAME=$(detect_app_name || true)
 
 # Determine Phoenix major.minor for comparison
 PHOENIX_MAJOR_MINOR=""
@@ -131,9 +136,4 @@ cat > "$CACHE_FILE" <<EOF
 EOF
 
 # Output summary for Claude's context
-echo "📋 Project detected: ${APP_NAME:-unknown}"
-echo "   Phoenix: $PHOENIX_VERSION$([ "$HAS_SCOPE" = "true" ] && echo ' (Scope struct)' || echo '')"
-echo "   LiveView: $HAS_LIVEVIEW"
-echo "   Ecto: $HAS_ECTO ($ECTO_ADAPTER)"
-echo "   Oban: $HAS_OBAN"
-echo "   Cache: $CACHE_FILE"
+echo "elixir-phoenix-guide: detected Phoenix $PHOENIX_VERSION (liveview=$HAS_LIVEVIEW, scope=$HAS_SCOPE). Invoke the plugin's skills before writing Elixir code."
