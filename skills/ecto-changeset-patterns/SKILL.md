@@ -1,8 +1,10 @@
 ---
 name: ecto-changeset-patterns
-description: MANDATORY for ALL changeset work beyond basic CRUD. Invoke before writing multiple changesets, cast_assoc, or conditional validation.
+description: Use when a resource needs multiple changesets (registration vs update), conditional validation, field transforms, or uniqueness validation — changeset composition.
 file_patterns:
-  - "**/*.ex"
+  - "**/schemas/**/*.ex"
+  - "**/accounts/*.ex"
+  - "**/*_schema.ex"
 auto_suggest: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: code-quality
-description: Automated code quality detection — duplication, complexity, unused functions. Invoke when analyzing or refactoring Elixir code.
+description: Use when refactoring for duplication, complexity, or dead code — includes the plugin's on-demand analysis scripts.
 file_patterns:
   - "**/*.ex"
   - "**/*.heex"

@@ -1,6 +1,6 @@
 ---
 name: ecto-essentials
-description: MANDATORY for ALL database work. Invoke before modifying schemas, queries, or migrations.
+description: Use when defining schemas, writing queries, or creating migrations — schema design, Repo usage, indexes, query composition.
 file_patterns:
   - "**/schemas/**/*.ex"
   - "**/migrations/**/*.exs"

@@ -1,6 +1,6 @@
 ---
 name: phoenix-uploads
-description: MANDATORY for file upload features. Invoke before implementing upload or file serving functionality.
+description: Use when implementing file uploads — allow_upload, consume_uploaded_entries, validation, dev vs production storage (local, S3/:external), serving files.
 file_patterns:
   - "**/live/**/*.ex"
   - "**/*_live.ex"

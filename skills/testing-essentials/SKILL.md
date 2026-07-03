@@ -1,6 +1,6 @@
 ---
 name: testing-essentials
-description: MANDATORY for ALL test files. Invoke before writing any _test.exs file.
+description: Use when writing or fixing ExUnit tests — case templates, async safety, fixtures, LiveView test helpers, error-path coverage.
 file_patterns:
   - "**/*_test.exs"
   - "**/test/**/*.exs"

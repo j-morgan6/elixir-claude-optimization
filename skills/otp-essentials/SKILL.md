@@ -1,8 +1,11 @@
 ---
 name: otp-essentials
-description: MANDATORY for ALL OTP work. Invoke before writing GenServer, Supervisor, Task, or Agent modules.
+description: Use when writing GenServer, Supervisor, Task, Agent, or Registry code — init/handle_continue, call vs cast, supervision strategies, process naming.
 file_patterns:
-  - "**/*.ex"
+  - "**/application.ex"
+  - "**/*_server.ex"
+  - "**/*_supervisor.ex"
+  - "**/workers/**/*.ex"
 auto_suggest: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: elixir-essentials
-description: MANDATORY for ALL Elixir code changes. Invoke before writing any .ex or .exs file.
+description: Use when writing or refactoring core Elixir — pattern matching, case/cond/with, pipes, {:ok, _}/{:error, _} contracts. Baseline style for any .ex/.exs change not covered by a more specific skill.
 file_patterns:
   - "**/*.ex"
   - "**/*.exs"

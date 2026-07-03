@@ -1,6 +1,6 @@
 ---
 name: oban-essentials
-description: MANDATORY for ALL Oban work. Invoke before writing workers or enqueuing jobs.
+description: Use when writing background jobs with Oban — worker options, return contracts, idempotency, uniqueness, Oban.Testing.
 file_patterns:
   - "**/workers/**/*.ex"
   - "**/*_worker.ex"

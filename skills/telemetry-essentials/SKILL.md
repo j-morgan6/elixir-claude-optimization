@@ -1,9 +1,10 @@
 ---
 name: telemetry-essentials
-description: MANDATORY for ALL telemetry, logging, and observability work. Invoke before writing telemetry handlers, Logger calls, or metrics code.
+description: Use when adding logging, metrics, or instrumentation — structured Logger usage, telemetry handler attachment, Ecto/Phoenix telemetry events.
 file_patterns:
-  - "**/*.ex"
-  - "**/*.exs"
+  - "**/telemetry.ex"
+  - "**/application.ex"
+  - "**/*_web.ex"
 auto_suggest: true
 ---
 

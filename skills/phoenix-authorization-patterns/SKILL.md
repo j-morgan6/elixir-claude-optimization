@@ -1,6 +1,6 @@
 ---
 name: phoenix-authorization-patterns
-description: MANDATORY for ALL authorization and access control work. Invoke before writing permission checks, policy modules, or role-based access.
+description: Use when deciding who may do what — ownership checks, policy modules, scoped queries, role-based access in LiveViews and controllers.
 file_patterns:
   - "**/*_live.ex"
   - "**/*_live/*.ex"

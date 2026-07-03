@@ -1,6 +1,6 @@
 ---
 name: phoenix-channels-essentials
-description: MANDATORY for ALL Phoenix Channels work. Invoke before writing socket, channel, or Presence modules.
+description: Use when building WebSocket features with Phoenix Channels — socket auth, join authorization, handle_in/push/broadcast, Presence.
 file_patterns:
   - "**/*_socket.ex"
   - "**/*_channel.ex"

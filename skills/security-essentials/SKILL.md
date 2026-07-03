@@ -1,10 +1,12 @@
 ---
 name: security-essentials
-description: MANDATORY for ALL security-sensitive code. Invoke before writing auth, token handling, redirects, or user input processing.
+description: Use when code touches user input, tokens, redirects, raw SQL, or logging — injection, XSS, atom exhaustion, timing attacks, audit tooling.
 file_patterns:
-  - "**/*.ex"
-  - "**/*.exs"
+  - "**/controllers/**/*.ex"
+  - "**/*_live.ex"
+  - "**/*_live/*.ex"
   - "**/*.heex"
+  - "**/user_auth.ex"
 auto_suggest: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: deployment-gotchas
-description: MANDATORY for deployment and release configuration. Invoke before modifying config/, rel/, or Dockerfile.
+description: Use when preparing releases or deployment config — runtime.exs vs compile-time config, release migrations, PHX_HOST/PHX_SERVER, assets, health checks.
 file_patterns:
   - "**/config/*.exs"
   - "**/rel/**"

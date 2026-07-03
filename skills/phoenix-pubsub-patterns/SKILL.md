@@ -1,6 +1,6 @@
 ---
 name: phoenix-pubsub-patterns
-description: MANDATORY for ALL PubSub and real-time broadcast work. Invoke before writing PubSub.subscribe, broadcast, or handle_info for real-time updates.
+description: Use when adding real-time updates via Phoenix.PubSub — subscribe/broadcast topology, topic naming, handle_info message handling.
 file_patterns:
   - "**/*_live.ex"
   - "**/*_live/*.ex"

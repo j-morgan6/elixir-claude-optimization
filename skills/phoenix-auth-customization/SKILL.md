@@ -1,6 +1,6 @@
 ---
 name: phoenix-auth-customization
-description: MANDATORY when extending phx.gen.auth with custom fields. Invoke before adding usernames, profiles, or custom registration fields.
+description: Use when extending phx.gen.auth — adding registration fields, custom user attributes, extra migrations alongside generated auth, fixture updates.
 file_patterns:
   - "**/accounts.ex"
   - "**/accounts/*.ex"

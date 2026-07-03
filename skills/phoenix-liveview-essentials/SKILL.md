@@ -1,6 +1,6 @@
 ---
 name: phoenix-liveview-essentials
-description: MANDATORY for ALL LiveView work. Invoke before writing LiveView modules or .heex templates.
+description: Use when writing LiveView modules or HEEx templates — mount/handle_params lifecycle, assigns, streams, events, components.
 file_patterns:
   - "**/live/**/*.ex"
   - "**/*_live.ex"

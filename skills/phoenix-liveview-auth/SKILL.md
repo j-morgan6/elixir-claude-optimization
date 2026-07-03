@@ -1,6 +1,6 @@
 ---
 name: phoenix-liveview-auth
-description: MANDATORY for ALL LiveView authentication work. Invoke before writing on_mount hooks, auth plugs for LiveViews, or session handling in LiveView modules.
+description: Use when protecting LiveViews with authentication — on_mount hooks, live_session, mount_current_scope, auth redirect testing.
 file_patterns:
   - "**/*_live.ex"
   - "**/*_live/*.ex"

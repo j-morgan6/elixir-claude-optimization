@@ -1,6 +1,6 @@
 ---
 name: phoenix-json-api
-description: MANDATORY for ALL JSON API work. Invoke before writing API controllers, pipelines, or JSON responses.
+description: Use when building JSON API endpoints — :api pipeline, FallbackController, error rendering, pagination, versioning, Bearer auth.
 file_patterns:
   - "**/*_controller.ex"
   - "**/*_json.ex"

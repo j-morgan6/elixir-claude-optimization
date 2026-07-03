@@ -1,8 +1,9 @@
 ---
 name: ecto-nested-associations
-description: MANDATORY for ALL nested association and multi-table work. Invoke before writing cast_assoc, cast_embed, Ecto.Multi, or cascade operations.
+description: Use when a form or operation manages parent and child records together — cast_assoc/cast_embed, on_replace, Ecto.Multi across tables, FK cascade design.
 file_patterns:
-  - "**/*.ex"
+  - "**/schemas/**/*.ex"
+  - "**/*_schema.ex"
 auto_suggest: true
 ---
 
