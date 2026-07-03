@@ -289,50 +289,7 @@ def parse_json(string) do
 end
 ```
 
-## Supervision Trees
-
-Let processes fail and restart (preferred over defensive coding).
-
-```elixir
-defmodule MyApp.Application do
-  use Application
-
-  def start(_type, _args) do
-    children = [
-      MyApp.Repo,
-      MyAppWeb.Endpoint,
-      {MyApp.Worker, []}
-    ]
-
-    opts = [strategy: :one_for_one, name: MyApp.Supervisor]
-    Supervisor.start_link(children, opts)
-  end
-end
-```
-
-## GenServer Error Handling
-
-Handle errors in GenServer callbacks.
-
-```elixir
-def handle_call(:risky_operation, _from, state) do
-  case perform_operation() do
-    {:ok, result} ->
-      {:reply, {:ok, result}, update_state(state, result)}
-
-    {:error, reason} ->
-      Logger.error("Operation failed: #{inspect(reason)}")
-      {:reply, {:error, reason}, state}
-  end
-end
-
-# Let it crash for unexpected errors
-def handle_cast(:dangerous_work, state) do
-  # If this raises, supervisor will restart the process
-  result = dangerous_function!()
-  {:noreply, Map.put(state, :result, result)}
-end
-```
+> Processes, GenServers, supervision: see the **otp-essentials** skill.
 
 ## Validation Errors
 

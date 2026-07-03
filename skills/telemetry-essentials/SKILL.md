@@ -392,25 +392,9 @@ TelemetryMetricsPrometheus.child_spec(metrics: MyAppWeb.Telemetry.metrics())
 
 ## Production Log Levels
 
-```elixir
-# config/prod.exs — default to :info
-config :logger, level: :info
+Default to `:info` in production — `:debug` logs SQL query parameters, which is a PII risk.
 
-# config/runtime.exs — allow override for debugging
-if config_env() == :prod do
-  if log_level = System.get_env("LOG_LEVEL") do
-    config :logger, level: String.to_existing_atom(log_level)
-  end
-end
-```
-
-**What each level logs:**
-| Level | Includes | Production Use |
-|-------|----------|---------------|
-| `:debug` | SQL params, internal state | Never (PII risk) |
-| `:info` | Requests, business events | Default |
-| `:warning` | Recoverable issues | Always |
-| `:error` | Failures needing attention | Always |
+> Production log level config lives in the **deployment-gotchas** skill (§7).
 
 ---
 

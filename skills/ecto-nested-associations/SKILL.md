@@ -306,36 +306,9 @@ create index(:comments, [:post_id])
 
 ## Testing Nested Associations
 
+One representative test — assert `on_replace: :delete` removes omitted children on update:
+
 ```elixir
-describe "create_post/1 with comments" do
-  test "creates post with nested comments" do
-    attrs = %{
-      title: "My Post",
-      comments: [
-        %{body: "Comment 1"},
-        %{body: "Comment 2"}
-      ]
-    }
-
-    assert {:ok, post} = Blog.create_post(attrs)
-    assert post.title == "My Post"
-
-    post = Repo.preload(post, :comments)
-    assert length(post.comments) == 2
-    assert Enum.any?(post.comments, &(&1.body == "Comment 1"))
-  end
-
-  test "rejects invalid nested comments" do
-    attrs = %{
-      title: "My Post",
-      comments: [%{body: nil}]
-    }
-
-    assert {:error, changeset} = Blog.create_post(attrs)
-    assert errors_on(changeset)[:comments]
-  end
-end
-
 describe "update_recipe/2 with on_replace: :delete" do
   test "removes omitted ingredients" do
     recipe = recipe_fixture(ingredients: [%{name: "Salt"}, %{name: "Pepper"}])
@@ -350,28 +323,10 @@ describe "update_recipe/2 with on_replace: :delete" do
     assert hd(updated.ingredients).name == "Salt"
   end
 end
-
-describe "place_order/2 with Ecto.Multi" do
-  test "creates order and line items atomically" do
-    user = user_fixture()
-    product = product_fixture(stock: 10)
-    items = [%{product_id: product.id, quantity: 2, price: 999}]
-
-    assert {:ok, %{order: order, line_items: {1, _}}} =
-             Orders.place_order(user, items)
-
-    assert order.user_id == user.id
-  end
-
-  test "rolls back on failure" do
-    user = user_fixture()
-    items = [%{product_id: -1, quantity: 2, price: 999}]
-
-    assert {:error, _step, _changeset, _changes} =
-             Orders.place_order(user, items)
-  end
-end
 ```
+
+See the **testing-essentials** skill for comprehensive test patterns (nested-create assertions,
+`Ecto.Multi` rollback assertions, invalid-changeset assertions, and more).
 
 ---
 

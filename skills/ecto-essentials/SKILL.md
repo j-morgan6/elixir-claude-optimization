@@ -215,16 +215,8 @@ end
 
 ## Casting Associations
 
-Use `cast_assoc` when working with nested data.
-
-```elixir
-def changeset(folder, attrs) do
-  folder
-  |> cast(attrs, [:name])
-  |> cast_assoc(:images, with: &Image.changeset/2)
-  |> validate_required([:name])
-end
-```
+> `cast_assoc` usage, the FK-in-child-changeset pitfall, and nested-data patterns: see the
+> **ecto-changeset-patterns** and **ecto-nested-associations** skills.
 
 ## Dynamic Queries
 

@@ -308,24 +308,7 @@ end
 
 ## Error Handling
 
-Always handle errors gracefully in LiveViews.
-
-```elixir
-@impl true
-def handle_event("risky_operation", _params, socket) do
-  case perform_operation() do
-    {:ok, result} ->
-      {:noreply, assign(socket, :result, result)}
-
-    {:error, reason} ->
-      {:noreply, put_flash(socket, :error, "Operation failed: #{reason}")}
-  end
-end
-```
-
-### Error Boundaries
-
-Handle errors in handle_event to prevent LiveView crashes.
+Handle errors in handle_event to prevent LiveView crashes — assign errors to the socket instead of letting the process crash.
 
 ```elixir
 @impl true
@@ -354,35 +337,7 @@ def handle_event("save", params, socket) do
 end
 ```
 
-## PubSub Broadcasting
-
-Use PubSub for real-time updates across LiveViews.
-
-```elixir
-# Subscribe in mount
-@impl true
-def mount(_params, _session, socket) do
-  if connected?(socket) do
-    Phoenix.PubSub.subscribe(MyApp.PubSub, "posts")
-  end
-
-  {:ok, assign(socket, :posts, list_posts())}
-end
-
-# Broadcast when data changes
-def create_post(attrs) do
-  with {:ok, post} <- Repo.insert(changeset) do
-    Phoenix.PubSub.broadcast(MyApp.PubSub, "posts", {:post_created, post})
-    {:ok, post}
-  end
-end
-
-# Handle broadcast
-@impl true
-def handle_info({:post_created, post}, socket) do
-  {:noreply, update(socket, :posts, fn posts -> [post | posts] end)}
-end
-```
+> Real-time updates: see the **phoenix-pubsub-patterns** skill.
 
 ## Testing
 
@@ -390,52 +345,11 @@ When writing LiveView tests, invoke `elixir-phoenix-guide:testing-essentials` be
 
 ## Common Lifecycle Mistakes
 
-### ❌ Mistake 1: Assuming Assigns Exist
+Mistakes 1 (uninitialized assigns) and 2 (subscribing without `connected?`) are covered by
+rules 2 and 3 above and the Two-Phase Rendering section. One more pitfall isn't covered by
+either rule:
 
-```elixir
-def render(assigns) do
-  ~H"""
-  <p>Count: <%= @count %></p>  <!-- Crash if @count not initialized -->
-  """
-end
-```
-
-### ✅ Fix: Initialize before render (mount or handle_params)
-
-```elixir
-@impl true
-def mount(_params, _session, socket) do
-  {:ok, assign(socket, :count, 0)}
-end
-```
-
-### ❌ Mistake 2: Subscribing Without Checking connected?
-
-```elixir
-@impl true
-def mount(_params, _session, socket) do
-  # BAD - subscribing in the disconnected mount is wasted work in a throwaway
-  # process, not a duplicate subscription — that process's subscription never
-  # receives anything before it's discarded, and mount runs again once connected
-  Phoenix.PubSub.subscribe(MyApp.PubSub, "topic")
-  {:ok, socket}
-end
-```
-
-### ✅ Fix: Check connected?
-
-```elixir
-@impl true
-def mount(_params, _session, socket) do
-  if connected?(socket) do
-    Phoenix.PubSub.subscribe(MyApp.PubSub, "topic")
-  end
-
-  {:ok, socket}
-end
-```
-
-### ❌ Mistake 3: Expensive Operations in Both Phases
+### ❌ Expensive Operations in Both Phases
 
 ```elixir
 @impl true
