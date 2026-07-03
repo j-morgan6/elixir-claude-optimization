@@ -154,10 +154,10 @@ def process(_), do: :inactive
 ## What This Optimizes
 
 ### Code Quality
-- **Blocks** callbacks without @impl true
+- **Flags** callbacks without @impl true (reported to Claude after the write, for it to fix)
 - **Blocks** dangerous Bash commands: `mix ecto.reset`, `git push --force`
-- **Blocks/warns** on security risks: String.to_atom/1, SQL-injection in fragments/raw queries, open redirects, timing-unsafe comparisons, secrets in Logger calls, IO.inspect/dbg left in lib code
-- **Warns** on raw/1 (XSS risk) and deprecated Phoenix APIs (form_for, live_redirect/live_patch, @current_user under Phoenix 1.8 scopes)
+- **Flags** security risks: String.to_atom/1, SQL-injection in fragments/raw queries, open redirects, timing-unsafe comparisons, secrets in Logger calls, IO.inspect/dbg left in lib code
+- **Flags** raw/1 (XSS risk) and deprecated Phoenix APIs (form_for, live_redirect/live_patch, @current_user under Phoenix 1.8 scopes)
 - **Checks** migrations for missing FK indexes and missing on_delete strategies
 - **Detects** code duplication and high ABC complexity (threshold: 30) on demand via `elixir scripts/code_quality.exs scan lib/`
 

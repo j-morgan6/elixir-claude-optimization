@@ -153,7 +153,7 @@ The elixir-phoenix-guide plugin provides essential skills that must be invoked:
 
 Hooks ship inside the elixir-phoenix-guide plugin (`hooks/hooks.json`) and enforce code quality automatically — nothing to configure in `settings.json`.
 
-**Context-aware:** SessionStart parses `mix.exs` and caches project facts (Phoenix version, LiveView, Ecto adapter, Oban) in the plugin data dir (never your repo) — the PostToolUse check reads that cache to adapt behavior, e.g. skipping LiveView-specific checks in API-only projects and only flagging `@current_user` when Phoenix 1.8+ Scope is detected.
+**Context-aware:** SessionStart parses `mix.exs` and caches project facts (Phoenix version, LiveView, Ecto adapter, Oban) in the plugin data dir (never your repo). The PostToolUse check reads one fact from that cache — `phoenix_has_scope` — to flag `@current_user` and suggest `@current_scope` only in Phoenix 1.8+ scope projects.
 
 | Event | Check |
 |---|---|
@@ -210,8 +210,8 @@ mix test           # Run tests
 
 ## Notes for Claude
 
-- Reference the `docs/reference/` docs when you need detailed information about specific areas
-- Trust the hooks - if they warn/block, there's usually a better Elixir pattern
+- Reference `docs/reference/` for detailed information about specific areas
+- Trust the hooks - if they flag or block something, there's usually a better Elixir pattern
 - Skills provide quick reference for common patterns
 - Use HexDocs MCP to look up dependency documentation (if configured)
 - When in doubt, prefer pattern matching, explicit returns, and simple solutions
