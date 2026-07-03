@@ -12,7 +12,7 @@ auto_suggest: true
 ## RULES — Follow these with no exceptions
 
 1. **Always `use Oban.Worker`** with explicit `queue` and `max_attempts` options
-2. **Return `{:ok, result}` for success, `{:error, reason}` for retryable failures, `{:cancel, reason}` for permanent failures** — never return bare `:ok` or raise
+2. **Return `{:ok, result}` for success, `{:error, reason}` for retryable failures, `{:cancel, reason}` for permanent failures** — prefer `{:ok, result}` over bare `:ok` for explicit intent (bare `:ok` is supported), and prefer `{:error, reason}` over raising
 3. **Make workers idempotent** — the same job may run more than once due to retries or node restarts
 4. **Use `unique` option to prevent duplicate jobs** — specify `period`, `fields`, and `keys`
 5. **Test with `Oban.Testing`** — use `assert_enqueued` and `perform_job`, never call `perform/1` directly
@@ -76,14 +76,14 @@ MyApp.Workers.SendWelcomeEmail.new(%{user_id: user.id}) |> Oban.insert!()
 Enqueue jobs from context modules, not LiveViews or controllers:
 
 ```elixir
-# Good — context handles the job
+# Good — context handles the job and its insert result
 defmodule MyApp.Accounts do
   def register_user(attrs) do
     with {:ok, user} <- create_user(attrs) do
-      MyApp.Workers.SendWelcomeEmail.new(%{user_id: user.id})
-      |> Oban.insert()
-
-      {:ok, user}
+      case MyApp.Workers.SendWelcomeEmail.new(%{user_id: user.id}) |> Oban.insert() do
+        {:ok, _job} -> {:ok, user}
+        {:error, changeset} -> {:error, changeset}
+      end
     end
   end
 end
@@ -115,7 +115,7 @@ def perform(%Oban.Job{args: args}) do
 end
 ```
 
-**Never raise in workers.** An unhandled exception counts as a retryable failure but produces noisy logs and stack traces. Use explicit `{:error, reason}` instead.
+**Prefer returning `{:error, reason}` over raising.** Both are recorded as retryable failures, but tuples make retry intent explicit and avoid the noisy logs and stack traces that come with an unhandled exception.
 
 ---
 
@@ -131,9 +131,11 @@ config :my_app, Oban,
     imports: 2         # 2 concurrent import jobs (resource-heavy)
   ]
 
-# config/test.exs — use testing mode
-config :my_app, Oban,
-  testing: :inline    # Jobs execute immediately in the test process
+# config/test.exs
+config :my_app, Oban, testing: :manual
+# :manual keeps jobs in the queue so assert_enqueued/perform_job work.
+# Use :inline only for tests that want jobs executed immediately in-process —
+# assert_enqueued will always fail under :inline because jobs are never inserted.
 ```
 
 ---
@@ -264,7 +266,7 @@ end
 
 - **Use `perform_job/2`** — not `perform/1`. `perform_job` validates args and simulates the Oban runtime.
 - **Use `assert_enqueued/1`** — verify jobs were enqueued with correct args.
-- **Use `Oban.Testing` inline mode** in test config — jobs run synchronously in the test process.
+- **Use `Oban.Testing` with `testing: :manual`** in test config — jobs stay queued so `assert_enqueued` and `perform_job` work.
 - **Test all return paths** — success, retryable error, and cancel.
 
 ---

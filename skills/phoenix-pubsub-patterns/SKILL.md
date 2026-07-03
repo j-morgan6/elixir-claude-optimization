@@ -12,11 +12,11 @@ auto_suggest: true
 
 ## RULES — Follow these with no exceptions
 
-1. **Always guard subscriptions with `if connected?(socket)`** — prevents duplicate subscriptions on static render (LiveView mounts twice: once static, once connected)
+1. **Always guard subscriptions with `if connected?(socket)`** — the disconnected render runs in a separate short-lived process; subscribing there is wasted work, not a duplicate (LiveView mounts twice: once static, once connected)
 2. **Broadcast from contexts, not LiveViews** — keeps real-time logic in the business layer; LiveViews only subscribe and react
 3. **Use consistent topic naming** — `"resource:id"` for specific resources, `"resource:action"` for collection-wide events
 4. **Handle PubSub messages in `handle_info/2`** — never in `handle_event/3`; PubSub messages are process messages, not client events
-5. **Update assigns immutably with `update/3`** — never replace the full list; use `update(socket, :items, &[new | &1])`
+5. **Prefer `update/3` when the new value derives from the old** — `update(socket, :posts, &[post | &1])` reads better than reaching into `socket.assigns` manually. Both are equivalent; this is style, not safety.
 6. **Test PubSub by calling context functions and asserting LiveView updates** — don't test `PubSub.broadcast` directly; test the full cycle
 
 ---
@@ -172,17 +172,20 @@ end
 
 ---
 
-## Immutable Assign Updates
+## Deriving New Assigns with `update/3`
 
-Always use `update/3` to modify list assigns. Never replace the entire list unless you're refreshing from the database.
+Use `update/3` when the new value derives from the old one — it reads better
+than reaching into `socket.assigns` manually. Functionally, `assign/3` and
+`update/3` produce identical results here; this is a style preference, not a
+correctness rule.
 
 ```elixir
-# Bad — replaces the list, loses any local state
+# Equivalent — reaches into socket.assigns directly
 def handle_info({:post_created, post}, socket) do
   {:noreply, assign(socket, :posts, [post | socket.assigns.posts])}
 end
 
-# Good — uses update/3 for immutable prepend
+# Preferred — update/3 reads better when deriving from the old value
 def handle_info({:post_created, post}, socket) do
   {:noreply, update(socket, :posts, fn posts -> [post | posts] end)}
 end

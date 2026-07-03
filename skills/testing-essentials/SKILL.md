@@ -13,7 +13,7 @@ auto_suggest: true
 
 1. **Follow the project's existing test setup patterns** (e.g. shared setup helpers like `setup :store_test_session`) — don't inline DataCase/ConnCase boilerplate that the project already abstracts away
 2. **Test both happy path AND error/invalid cases** for every function
-3. **Use `async: true` only when safe** — safe: pure functions, changesets, helpers; unsafe: DB contexts with shared rows, LiveView, `Application.put_env`, external services
+3. **Use `async: true` by default; disable it only for real shared state** — global state, `Application.put_env`, named processes, external services. LiveView/ConnCase tests are async-safe under the Ecto SQL Sandbox (Phoenix's own generators emit `async: true`).
 4. **Define test data in fixtures** (`test/support/`) — never build it inline across multiple tests
 5. **Use `has_element?/2` and `element/2` for LiveView assertions** — not `html =~ "text"` for structure checks
 6. **Always test the unauthorized case** for any protected resource
@@ -207,5 +207,3 @@ assert Blog.list_published_posts() == [old_post]
 ```
 
 ---
-
-See `testing-guide.md` for comprehensive examples covering async tests, Mox mocking, file upload testing, and Ecto query testing.

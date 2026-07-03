@@ -233,16 +233,26 @@ user_ids
 
 ### Supervised Tasks (fire-and-forget)
 
-For work that should be supervised but doesn't need a result:
+Start tasks under a `Task.Supervisor` for clean shutdown and observability.
+Note: `Task.Supervisor.start_child/2` defaults to `restart: :temporary` —
+crashed tasks are **not** restarted. Pass `restart: :transient` if you want
+restarts on abnormal exit.
 
 ```elixir
 # Add to your supervision tree
 {Task.Supervisor, name: MyApp.TaskSupervisor}
 
-# Start supervised tasks (automatically restarted on crash)
+# Start a supervised task — not restarted by default (restart: :temporary)
 Task.Supervisor.start_child(MyApp.TaskSupervisor, fn ->
   send_welcome_email(user)
 end)
+
+# Restart on crash — pass restart: :transient
+Task.Supervisor.start_child(
+  MyApp.TaskSupervisor,
+  fn -> send_welcome_email(user) end,
+  restart: :transient
+)
 ```
 
 ---
