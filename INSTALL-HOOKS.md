@@ -16,9 +16,9 @@ No settings.json editing, no script copying.
 |---|---|
 | SessionStart | Detects Phoenix/LiveView/Ecto/Oban and caches project facts (in the plugin data dir, never your repo) |
 | PreToolUse (Bash) | Blocks `mix ecto.reset` and `git push --force` (suggests `--force-with-lease`) |
-| PostToolUse (Write/Edit on .ex/.exs/.heex) | Security (String.to_atom, SQL-injection fragments, open redirects, raw/1, secrets in logs, timing-unsafe ==), Phoenix deprecations (form_for, live_redirect/live_patch, @current_user under 1.8 scopes), missing `@impl true`, migration FK/on_delete safety |
+| PostToolUse (Write/Edit on .ex/.exs/.heex) | Security (String.to_atom, SQL-injection fragments, open redirects, raw/1, secrets in logs, timing-unsafe ==, IO.inspect/dbg debug calls), Phoenix deprecations (form_for, live_redirect/live_patch, @current_user under 1.8 scopes), missing `@impl true`, migration FK/on_delete safety |
 
-Requires `jq` (hooks silently no-op without it): `brew install jq`.
+The PreToolUse and PostToolUse checks require `jq` (they silently no-op without it): `brew install jq`. SessionStart's `detect_project.sh` has no `jq` dependency — it always runs.
 
 ## How feedback works
 

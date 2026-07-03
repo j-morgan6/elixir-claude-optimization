@@ -151,33 +151,24 @@ The elixir-phoenix-guide plugin provides essential skills that must be invoked:
 
 ## Hooks
 
-Hooks actively enforce code quality and adapt to your project stack:
+Hooks ship inside the elixir-phoenix-guide plugin (`hooks/hooks.json`) and enforce code quality automatically — nothing to configure in `settings.json`.
 
-**Context-Aware:** Hooks read `.elixir-phoenix-guide-project.json` (generated at session start from `mix.exs`) to adapt behavior — API-only projects skip LiveView hooks, Phoenix 1.8+ gets Scope-aware guidance.
+**Context-aware:** SessionStart parses `mix.exs` and caches project facts (Phoenix version, LiveView, Ecto adapter, Oban) in the plugin data dir (never your repo) — the PostToolUse check reads that cache to adapt behavior, e.g. skipping LiveView-specific checks in API-only projects and only flagging `@current_user` when Phoenix 1.8+ Scope is detected.
 
-- **nested-if-else** - Warns with case/multi-clause function fix suggestion
-- **hardcoded-config** - Blocks hardcoded paths/limits with Application.get_env fix
-- **inefficient-enum** - Warns with for comprehension/reduce fix suggestion
-- **missing-impl** - Blocks callbacks without @impl true (skips in API-only projects)
-- **string-concatenation** - Warns with IO list/Enum.join fix suggestion
-- **code-quality-analysis** - After write: detects duplication, complexity, unused functions
-- **migration-safety** - Checks migrations for missing FK indexes, cascade strategies, unsafe operations
-- **missing-preload** - After write: warns on association accessors without visible preload
-- **missing-error-clause** - After write: warns on `with` missing `else` clause
-- **raw-sql-warning** - After write: blocks SQL injection, warns on raw SQL
-- **context-boundary-violation** - After write: warns on Repo in LiveViews (skips in API-only projects)
+| Event | Check |
+|---|---|
+| SessionStart | Detects Phoenix/LiveView/Ecto/Oban and caches project facts |
+| PreToolUse (Bash) | Blocks `mix ecto.reset` and `git push --force` (suggests `--force-with-lease`) |
+| PostToolUse (Write/Edit on .ex/.exs/.heex) | Security (String.to_atom, SQL-injection fragments, open redirects, raw/1, secrets in logs, timing-unsafe ==, IO.inspect/dbg debug calls), Phoenix deprecations (form_for, live_redirect/live_patch, @current_user under 1.8 scopes), missing `@impl true`, migration FK/on_delete safety |
 
-If a hook triggers, follow its suggestion — each warning includes a copy-pasteable fix.
+If a hook triggers, it reports the issue and a fix on stderr — follow the suggestion or explain why it's intentional.
 
 ## Code Quality Automation
 
-PostToolUse hooks automatically analyze files after they're written:
-- **Elixir files** (.ex/.exs): duplication, ABC complexity, unused private functions
-- **HEEx templates** (.heex): template markup duplication
+Duplication and ABC-complexity analysis run on demand, not as a hook. From a checkout of the elixir-phoenix-guide repo:
 
-For full project analysis:
 ```bash
-bash ~/.claude/scripts/elixir-phoenix-guide/run_analysis.sh
+elixir scripts/code_quality.exs scan lib/
 ```
 
 ## Development Workflow
@@ -219,7 +210,7 @@ mix test           # Run tests
 
 ## Notes for Claude
 
-- Reference agent docs when you need detailed information about specific areas
+- Reference the `docs/reference/` docs when you need detailed information about specific areas
 - Trust the hooks - if they warn/block, there's usually a better Elixir pattern
 - Skills provide quick reference for common patterns
 - Use HexDocs MCP to look up dependency documentation (if configured)
