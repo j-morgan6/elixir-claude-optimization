@@ -49,6 +49,22 @@ defmodule CodeQuality do
   defp extract_functions(ast) do
     {_, funs} =
       Macro.prewalk(ast, [], fn
+        {:def, meta, [{:when, _, [{name, _, args} | _guards]} | rest]} = node, acc
+        when is_atom(name) ->
+          arity = count_arity(args)
+          body = extract_body(rest)
+          body_str = if body, do: Macro.to_string(body), else: ""
+          line = Keyword.get(meta, :line, 0)
+          {node, [{name, arity, line, body_str} | acc]}
+
+        {:defp, meta, [{:when, _, [{name, _, args} | _guards]} | rest]} = node, acc
+        when is_atom(name) ->
+          arity = count_arity(args)
+          body = extract_body(rest)
+          body_str = if body, do: Macro.to_string(body), else: ""
+          line = Keyword.get(meta, :line, 0)
+          {node, [{name, arity, line, body_str} | acc]}
+
         {:def, meta, [{name, _, args} | rest]} = node, acc when is_atom(name) ->
           arity = count_arity(args)
           body = extract_body(rest)
@@ -70,12 +86,6 @@ defmodule CodeQuality do
     Enum.reverse(funs)
   end
 
-  defp extract_body([%{} = kw | _]) do
-    Map.get(kw, :do)
-  rescue
-    _ -> nil
-  end
-
   defp extract_body([[do: body] | _]), do: body
   defp extract_body([body | _]) when is_tuple(body), do: body
   defp extract_body(_), do: nil
@@ -86,6 +96,7 @@ defmodule CodeQuality do
         name1 == name2,
         arity1 == arity2,
         byte_size(body1) > @min_body_size,
+        byte_size(body2) > @min_body_size,
         sim = similarity(body1, body2),
         sim >= @similarity_threshold do
       %{
@@ -136,6 +147,22 @@ defmodule CodeQuality do
   defp extract_function_complexities(ast) do
     {_, funs} =
       Macro.prewalk(ast, [], fn
+        {:def, meta, [{:when, _, [{name, _, args} | _guards]} | rest]} = node, acc
+        when is_atom(name) ->
+          arity = count_arity(args)
+          body = extract_body(rest)
+          complexity = calculate_complexity(body)
+          line = Keyword.get(meta, :line, 0)
+          {node, [{name, arity, line, complexity} | acc]}
+
+        {:defp, meta, [{:when, _, [{name, _, args} | _guards]} | rest]} = node, acc
+        when is_atom(name) ->
+          arity = count_arity(args)
+          body = extract_body(rest)
+          complexity = calculate_complexity(body)
+          line = Keyword.get(meta, :line, 0)
+          {node, [{name, arity, line, complexity} | acc]}
+
         {:def, meta, [{name, _, args} | rest]} = node, acc when is_atom(name) ->
           arity = count_arity(args)
           body = extract_body(rest)
@@ -249,7 +276,8 @@ defmodule CodeQuality do
       # Check if each private function is called anywhere else in the file
       private_funs
       |> Enum.filter(fn {name, _def_line} ->
-        call_pattern = ~r"(?:(?<!\.)#{Regex.escape(name)}\(|&#{Regex.escape(name)}/)"
+        call_pattern =
+          ~r/(?:(?<!\.)#{Regex.escape(name)}\(|&#{Regex.escape(name)}\/|\|>\s*#{Regex.escape(name)}\b)/
 
         call_count =
           lines
