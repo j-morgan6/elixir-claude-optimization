@@ -30,30 +30,5 @@ else
 fi
 
 echo ""
-
-# Run template duplication check
-echo "Analyzing HEEx templates..."
-TEMPLATE_ISSUES=0
-TEMPLATE_COUNT=0
-
-while IFS= read -r -d '' file; do
-  TEMPLATE_COUNT=$((TEMPLATE_COUNT + 1))
-  bash "$SCRIPTS_DIR/detect_template_duplication.sh" "$file"
-  if [ $? -ne 0 ]; then
-    TEMPLATE_ISSUES=1
-  fi
-done < <(find "$DIR/lib" -name "*.heex" -print0 2>/dev/null)
-
-if [ "$TEMPLATE_COUNT" -eq 0 ]; then
-  echo "No .heex templates found."
-elif [ "$TEMPLATE_ISSUES" -eq 0 ]; then
-  echo "No template duplication issues found ($TEMPLATE_COUNT templates checked)"
-fi
-
-if [ "$TEMPLATE_ISSUES" -eq 1 ]; then
-  EXIT_CODE=1
-fi
-
-echo ""
 echo "Analysis complete."
 exit $EXIT_CODE

@@ -14,7 +14,7 @@
 
 ## Project Structure
 
-See `~/.claude/agents/project-structure.md` for detailed directory layout and organization principles.
+See `docs/reference/project-structure.md` for detailed directory layout and organization principles.
 
 **Key directories:**
 - `lib/[your_app]/` - Core business logic and contexts
@@ -116,14 +116,14 @@ Use `with` statements for sequential operations that can fail.
 - Write operations through context modules
 - Validate at changeset level, constrain at database level
 
-## When to Reference Agent Docs
+## When to Reference Docs
 
 Consult these documents when working on specific tasks:
 
-- **Starting a new LiveView?** → `~/.claude/agents/liveview-checklist.md`
-- **Writing database queries?** → `~/.claude/agents/ecto-conventions.md`
-- **Need to understand project layout?** → `~/.claude/agents/project-structure.md`
-- **Writing tests?** → `~/.claude/agents/testing-guide.md`
+- **Starting a new LiveView?** → `docs/reference/liveview-checklist.md`
+- **Writing database queries?** → `docs/reference/ecto-conventions.md`
+- **Need to understand project layout?** → `docs/reference/project-structure.md`
+- **Writing tests?** → `docs/reference/testing-guide.md`
 
 ## Skills
 
@@ -197,7 +197,7 @@ bash ~/.claude/scripts/elixir-phoenix-guide/run_analysis.sh
 - Tests mirror source structure
 - LiveView tests use `Phoenix.LiveViewTest`
 
-See `~/.claude/agents/testing-guide.md` for comprehensive testing patterns.
+See `docs/reference/testing-guide.md` for comprehensive testing patterns.
 
 ## Code Quality
 

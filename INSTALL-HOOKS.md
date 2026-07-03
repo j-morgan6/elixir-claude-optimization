@@ -1,92 +1,48 @@
-# Installing Elixir Optimization Hooks
+# Hooks
 
-The hooks for this plugin use Claude Code's native hook system (shell commands in settings.json), not YAML files.
+Hooks ship **inside the plugin** (`hooks/hooks.json`) and activate
+automatically when you install it:
 
-## Installation Methods
+```
+/plugin marketplace add j-morgan6/elixir-phoenix-guide
+/plugin install elixir-phoenix-guide@elixir-phoenix-guide
+```
 
-### Method 1: Automatic (Recommended)
+No settings.json editing, no script copying.
 
-Run the install script which will merge hooks into your settings:
+## What runs
+
+| Event | Check |
+|---|---|
+| SessionStart | Detects Phoenix/LiveView/Ecto/Oban and caches project facts (in the plugin data dir, never your repo) |
+| PreToolUse (Bash) | Blocks `mix ecto.reset` and `git push --force` (suggests `--force-with-lease`) |
+| PostToolUse (Write/Edit on .ex/.exs/.heex) | Security (String.to_atom, SQL-injection fragments, open redirects, raw/1, secrets in logs, timing-unsafe ==), Phoenix deprecations (form_for, live_redirect/live_patch, @current_user under 1.8 scopes), missing `@impl true`, migration FK/on_delete safety |
+
+Requires `jq` (hooks silently no-op without it): `brew install jq`.
+
+## How feedback works
+
+Claude Code hooks communicate through **exit code 2 with the reason on
+stderr** — that reason is fed back to Claude, which fixes the issue. Exit 0
+means no findings. There is no separate "warning" tier.
+
+## Writing your own
+
+Hooks receive JSON on stdin. Get the file path with:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/j-morgan6/elixir-phoenix-guide/main/install.sh | bash
+FILE=$(jq -r '.tool_input.file_path // empty')
 ```
 
-### Method 2: Manual Installation
+(`$CLAUDE_PROJECT_DIR` is the project root; there is no
+`CLAUDE_HOOK_FILE_PATH` environment variable.)
 
-1. Copy the hooks configuration:
-```bash
-cat hooks-settings.json
-```
+## Manual install (not using the plugin manager)
 
-2. Merge it into your `~/.claude/settings.json` or `.claude/settings.json`
+Copy the entries from `hooks/hooks.json` into `~/.claude/settings.json`,
+replacing `${CLAUDE_PLUGIN_ROOT}` with the absolute path of your checkout.
+When merging, **append** to existing event arrays — don't replace them.
 
-3. If you already have hooks, merge the `PreToolUse` arrays together
+## Testing
 
-## What the Hooks Do
-
-### Blocking Hooks (exit 2 - prevents the action)
-
-1. **Missing @impl true** - Blocks callback functions without `@impl true` annotation
-   - Catches: `def mount(`, `def handle_event(`, etc.
-   - Message: "Missing @impl true before callback function"
-
-2. **Hardcoded file paths** - Blocks hardcoded paths like `/uploads/` or `priv/static/`
-   - Message: "Use Application.get_env(:app, :config_key) instead"
-
-3. **Hardcoded file sizes** - Blocks hardcoded large numbers (file size limits)
-   - Message: "Move to Application config"
-
-### Warning Hooks (exit 1 - shows warning but allows)
-
-4. **Nested if/else** - Warns about nested conditionals
-   - Message: "Consider using pattern matching or case statements"
-
-5. **Inefficient Enum chains** - Warns about multiple Enum.map/filter
-   - Message: "Consider using a for comprehension"
-
-6. **String concatenation in loops** - Warns about `<>` in Enum operations
-   - Message: "Consider using IO lists or Enum.join"
-
-## Testing Hooks
-
-Create a file with anti-patterns:
-
-```elixir
-# Should block (missing @impl)
-def handle_event("save", params, socket) do
-  # Should block (hardcoded path)
-  path = "/uploads/images"
-
-  # Should block (hardcoded size)
-  max_size = 10000000
-
-  # Should warn (nested if)
-  if user do
-    if admin do
-      :ok
-    end
-  end
-
-  {:noreply, socket}
-end
-```
-
-The hooks should fire on Write or Edit operations.
-
-## Uninstalling Hooks
-
-Remove the `hooks` section from your `~/.claude/settings.json` or `.claude/settings.json`.
-
-## Hook System Reference
-
-Claude Code hooks run shell commands when tools are used:
-- **PreToolUse**: Before Write, Edit, Bash, etc.
-- **PostToolUse**: After tool completes
-- **exit 0**: Allow the action
-- **exit 1**: Warning (shows message, allows action)
-- **exit 2**: Block (shows message, prevents action)
-
-Environment variables available:
-- `$CLAUDE_HOOK_FILE_PATH`: File being edited/written
-- `$CLAUDE_HOOK_TOOL_NAME`: Tool being used (Write, Edit, etc.)
+`bash tests/hooks/run_tests.sh` exercises every check with fixture files.

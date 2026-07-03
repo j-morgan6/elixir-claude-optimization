@@ -75,10 +75,9 @@ Context-aware enforcement rules that adapt to your project stack:
 ### Subagent Enforcement
 - **SubagentStart hook** - Injects condensed rules from all 19 skills into every spawned subagent, ensuring code written by subagents follows the same standards
 
-### Analysis Scripts (4 scripts)
+### Analysis Scripts (3 scripts)
 Automated code quality analysis tools:
 - **code_quality.exs** - AST-based Elixir analysis: duplication detection, ABC complexity, unused function detection
-- **detect_template_duplication.sh** - HEEx template duplication detection
 - **detect_project.sh** - Project stack detection for context-aware hooks
 - **run_analysis.sh** - Full project analysis runner
 
@@ -245,10 +244,9 @@ elixir-phoenix-guide/
 ├── scripts/                           # Analysis and detection scripts
 │   ├── code_quality.exs              # AST-based Elixir analysis
 │   ├── detect_project.sh             # Project stack detection
-│   ├── detect_template_duplication.sh # HEEx template comparison
 │   └── run_analysis.sh               # Full project analysis runner
 ├── hooks-settings.json                # Hook configuration
-└── agents/                            # Reference documentation
+└── docs/reference/                    # Reference documentation
     ├── project-structure.md
     ├── liveview-checklist.md
     ├── ecto-conventions.md
@@ -266,7 +264,7 @@ elixir-phoenix-guide/
 After installation via the plugin manager, all configuration files are installed to `~/.claude/`:
 - Skills: `~/.claude/skills/`
 - Hooks: `~/.claude/settings.json`
-- Agent docs: `~/.claude/agents/`
+- Reference docs: `docs/reference/` (in the repo checkout)
 
 You can customize these files directly. Changes take effect after restarting Claude Code.
 
