@@ -19,8 +19,8 @@ Not a deployment guide — these are the 7 things that break every first Phoenix
 2. **Run migrations via release commands (`bin/migrate`)** — `mix` is not available in production releases
 3. **Set `PHX_HOST` and `PHX_SERVER=true`** — without these, URL generation breaks and the server won't start
 4. **Run `mix assets.deploy` before building the release** — forgetting this means no CSS/JS in production
-5. **Never hardcode secrets** — use `System.get_env!/1` in `runtime.exs` (the `!` crashes on boot if missing, which is what you want)
-6. **Add a `/health` endpoint that queries the database** — load balancers need it, and a 200-only check hides DB connection failures
+5. **Never hardcode secrets** — use `System.fetch_env!/1` in `runtime.exs` (the `!` crashes on boot if missing, which is what you want)
+6. **Split health checks into liveness and readiness** — liveness returns 200 without touching the DB; only readiness queries the database
 7. **Use `config :logger, level: :info` in production** — `:debug` logs query parameters including user data
 
 ---
@@ -35,14 +35,16 @@ Not a deployment guide — these are the 7 things that break every first Phoenix
 ```elixir
 # config/prod.exs — compiled into release, cannot read env vars at boot
 config :my_app, MyApp.Repo,
-  url: System.get_env("DATABASE_URL")  # Always nil in release!
+  # Evaluated at BUILD time — captures the build machine's env, not the
+  # runtime env. Silently wrong in a release; use runtime.exs instead.
+  url: System.get_env("DATABASE_URL")
 ```
 
 **Good:**
 ```elixir
 # config/runtime.exs — evaluated at boot, reads env vars correctly
 if config_env() == :prod do
-  database_url = System.get_env!("DATABASE_URL")
+  database_url = System.fetch_env!("DATABASE_URL")
 
   config :my_app, MyApp.Repo,
     url: database_url,
@@ -125,7 +127,7 @@ config :my_app, MyAppWeb.Endpoint,
 ```elixir
 # config/runtime.exs
 if config_env() == :prod do
-  host = System.get_env!("PHX_HOST")
+  host = System.fetch_env!("PHX_HOST")
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :my_app, MyAppWeb.Endpoint,
@@ -188,14 +190,14 @@ config :my_app, MyAppWeb.Endpoint,
 ```elixir
 # config/runtime.exs — read from environment, crash if missing
 if config_env() == :prod do
-  secret_key_base = System.get_env!("SECRET_KEY_BASE")
+  secret_key_base = System.fetch_env!("SECRET_KEY_BASE")
 
   config :my_app, MyAppWeb.Endpoint,
     secret_key_base: secret_key_base
 end
 ```
 
-**Why `get_env!` (with bang):** If the secret is missing, the app crashes immediately on boot with a clear error. Without the bang, it starts with `nil` and fails later with a confusing error.
+**Why `fetch_env!` (with bang):** If the secret is missing, the app crashes immediately on boot with a clear error. Plain `System.get_env/1` returns `nil` when missing and fails later with a confusing error.
 
 ```bash
 # Generate a secret
@@ -223,16 +225,29 @@ def health(conn, _params) do
 end
 ```
 
+**Liveness vs readiness:** a load balancer *liveness* probe should return 200
+without touching the database — a transient DB blip must not remove the whole
+fleet. Point deep checks (DB query below) at a *readiness* probe only.
+
 **Good:**
 ```elixir
 # router.ex
-get "/health", HealthController, :check
+get "/health/live", HealthController, :live
+get "/health/ready", HealthController, :ready
 
 # lib/my_app_web/controllers/health_controller.ex
 defmodule MyAppWeb.HealthController do
   use MyAppWeb, :controller
 
-  def check(conn, _params) do
+  # Liveness: proves the BEAM is up and the endpoint is responding.
+  # No DB query — a slow/unavailable database must not take down the
+  # whole fleet just because one instance can't reach it.
+  def live(conn, _params) do
+    send_resp(conn, 200, "OK")
+  end
+
+  # Readiness: proves this instance can actually serve traffic.
+  def ready(conn, _params) do
     case Ecto.Adapters.SQL.query(MyApp.Repo, "SELECT 1") do
       {:ok, _} ->
         json(conn, %{status: "ok", database: "connected"})
@@ -246,7 +261,13 @@ defmodule MyAppWeb.HealthController do
 end
 ```
 
-**Configure your load balancer** to hit `/health` and expect a 200. If the database goes down, the health check fails and the load balancer stops routing traffic.
+**Configure your load balancer** with two probes: liveness at `/health/live`
+(restart the instance if this fails) and readiness at `/health/ready` (stop
+routing traffic to this instance if this fails, but don't restart it — the
+rest of the fleet may still be healthy). Collapsing both into one `/health`
+endpoint means a DB blip either gets masked (if it's a shallow check) or
+takes healthy instances out of rotation right when the DB needs the load
+to drop (if it's a deep check without the liveness/readiness split).
 
 ---
 
