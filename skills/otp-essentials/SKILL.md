@@ -138,6 +138,33 @@ def handle_info(:tick, state) do
 end
 ```
 
+### Error Handling in Callbacks
+
+Handle *expected* errors gracefully — reply with `{:error, reason}` and keep the state. Let *unexpected* errors crash so the supervisor restarts the process.
+
+```elixir
+# Expected failure — reply with an error tuple, log it, keep serving
+@impl true
+def handle_call(:risky_operation, _from, state) do
+  case perform_operation() do
+    {:ok, result} ->
+      {:reply, {:ok, result}, update_state(state, result)}
+
+    {:error, reason} ->
+      Logger.error("Operation failed: #{inspect(reason)}")
+      {:reply, {:error, reason}, state}
+  end
+end
+
+# Unexpected failure — let it crash
+@impl true
+def handle_cast(:dangerous_work, state) do
+  # If this raises, the supervisor restarts the process with clean state
+  result = dangerous_function!()
+  {:noreply, Map.put(state, :result, result)}
+end
+```
+
 ---
 
 ## Supervisors

@@ -306,27 +306,19 @@ create index(:comments, [:post_id])
 
 ## Testing Nested Associations
 
-One representative test — assert `on_replace: :delete` removes omitted children on update:
+One representative test — assert `Ecto.Multi` rolls back all steps atomically on failure:
 
 ```elixir
-describe "update_recipe/2 with on_replace: :delete" do
-  test "removes omitted ingredients" do
-    recipe = recipe_fixture(ingredients: [%{name: "Salt"}, %{name: "Pepper"}])
-    recipe = Repo.preload(recipe, :ingredients)
+describe "place_order/2 with Ecto.Multi" do
+  test "rolls back on failure" do
+    user = user_fixture()
+    items = [%{product_id: -1, quantity: 2, price: 999}]
 
-    # Only send Salt — Pepper should be deleted
-    attrs = %{ingredients: [%{id: hd(recipe.ingredients).id, name: "Salt"}]}
-    assert {:ok, updated} = Recipes.update_recipe(recipe, attrs)
-
-    updated = Repo.preload(updated, :ingredients, force: true)
-    assert length(updated.ingredients) == 1
-    assert hd(updated.ingredients).name == "Salt"
+    assert {:error, _step, _changeset, _changes} =
+             Orders.place_order(user, items)
   end
 end
 ```
-
-See the **testing-essentials** skill for comprehensive test patterns (nested-create assertions,
-`Ecto.Multi` rollback assertions, invalid-changeset assertions, and more).
 
 ---
 
