@@ -16,6 +16,13 @@
 # Note: These files are stored outside this repo
 docs/analysis/
 docs/feedback/
+docs/superpowers/
+
+# Platform-specific plugin ports (each is its own git repo)
+copilot/
+gemini/
+cursor/
+opencode/
 
 # Internal planning documents (not for public repo)
 ROADMAP.md
