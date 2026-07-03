@@ -117,12 +117,21 @@ def transfer_images(image_ids, from_folder_id, to_folder_id) do
     with {:ok, from_folder} <- get_folder(from_folder_id),
          {:ok, to_folder} <- get_folder(to_folder_id),
          {count, nil} <- update_images(image_ids, to_folder_id) do
-      {:ok, count}
+      # Repo.transaction wraps the return — don't return {:ok, _} from inside
+      count
     else
       {:error, reason} -> Repo.rollback(reason)
       _ -> Repo.rollback(:unknown_error)
     end
   end)
+end
+
+# Repo.transaction/1 always wraps the fn's return in {:ok, _}.
+# Returning {:ok, count} from inside would yield {:ok, {:ok, count}} to the caller.
+# Callers see {:ok, count} or {:error, reason}:
+case transfer_images(ids, from_id, to_id) do
+  {:ok, count} -> # count images transferred
+  {:error, reason} -> # rolled back
 end
 ```
 

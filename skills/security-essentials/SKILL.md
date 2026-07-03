@@ -12,13 +12,13 @@ auto_suggest: true
 
 ## RULES — Follow these with no exceptions
 
-1. **Never use `String.to_atom/1` on user input** — atoms are never garbage collected; user-controlled atoms exhaust the atom table and crash the BEAM VM
+1. **Never use `String.to_atom/1` on user input** — atoms are never garbage collected; user-controlled atoms exhaust the atom table and crash the BEAM VM. `String.to_existing_atom/1` avoids that risk but still raises `ArgumentError` on unknown input (unhandled 500) — whitelist with a `case` instead of either
 2. **Never interpolate strings into `fragment()` or `SQL.query()`** — always use `?` parameters for fragments and `$1` for raw SQL
 3. **Never redirect to user-controlled URLs** — validate against a whitelist or use verified routes (`~p"..."`)
 4. **Avoid `raw/1` in templates** — Phoenix auto-escapes for a reason; if HTML is required, sanitize first with a library like HtmlSanitizeEx
 5. **Never log sensitive data** — passwords, tokens, secrets, API keys, and credentials must never appear in Logger calls
 6. **Use `Plug.Crypto.secure_compare/2` for token comparison** — never `==`, which enables timing attacks
-7. **Run dependency audits after changes** — `mix deps.audit`, `mix hex.audit`, and `mix sobelow` catch known vulnerabilities
+7. **Run dependency audits after changes** — `mix hex.audit` checks for retired/deprecated packages (checksum verification against Hex is already automatic via `mix.lock`); `mix deps.audit` (requires adding `{:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false}`) checks for known CVEs; `mix sobelow` does static security analysis of your code
 
 ---
 
@@ -28,8 +28,10 @@ The BEAM atom table has a fixed limit (default ~1M atoms) and is **never garbage
 
 **Bad:**
 ```elixir
-# User controls the atom — can exhaust atom table
+# User controls the atom — creates atoms forever: atom table exhaustion, VM crash
 role = String.to_atom(params["role"])
+
+# Never creates atoms, but raises ArgumentError on unknown input (unhandled 500)
 status = String.to_existing_atom(params["status"])
 ```
 
@@ -210,10 +212,11 @@ end
 Run these commands after adding or updating dependencies:
 
 ```bash
-# Check for known vulnerabilities in dependencies
+# Check for known CVEs in dependencies (requires mix_audit — see below)
 mix deps.audit
 
-# Verify package checksums match Hex registry
+# Check for retired/deprecated packages
+# (checksum verification against Hex is automatic via mix.lock — no separate step needed)
 mix hex.audit
 
 # Static security analysis of your code
@@ -221,6 +224,13 @@ mix sobelow
 
 # All three in sequence
 mix deps.audit && mix hex.audit && mix sobelow
+```
+
+`mix deps.audit` requires adding the dependency:
+
+```elixir
+# mix.exs
+{:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false}
 ```
 
 **Add to CI pipeline:**

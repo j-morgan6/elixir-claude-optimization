@@ -171,11 +171,19 @@ end
 @impl true
 def handle_event("delete", %{"id" => id}, socket) do
   scope = socket.assigns.current_scope
-  post = Blog.get_user_post(scope, id)
 
-  case Blog.delete_user_post(scope, post) do
-    {:ok, _} -> {:noreply, update(socket, :posts, &Enum.reject(&1, fn p -> p.id == post.id end))}
-    {:error, :unauthorized} -> {:noreply, put_flash(socket, :error, "Not authorized")}
+  # get_user_post/2 is scoped — it returns nil for posts that don't exist
+  # OR that exist but aren't owned by this user, so nil must be handled
+  # before calling delete_user_post/2
+  case Blog.get_user_post(scope, id) do
+    nil ->
+      {:noreply, put_flash(socket, :error, "Not found")}
+
+    post ->
+      case Blog.delete_user_post(scope, post) do
+        {:ok, _} -> {:noreply, update(socket, :posts, &Enum.reject(&1, fn p -> p.id == post.id end))}
+        {:error, :unauthorized} -> {:noreply, put_flash(socket, :error, "Not authorized")}
+      end
   end
 end
 ```

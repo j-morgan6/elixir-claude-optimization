@@ -73,7 +73,12 @@ defmodule MyAppWeb.API.V1.PostController do
   action_fallback MyAppWeb.FallbackController
 
   def index(conn, params) do
-    page = Map.get(params, "page", "1") |> String.to_integer()
+    page =
+      case Integer.parse(params["page"] || "1") do
+        {n, ""} when n > 0 -> n
+        _ -> 1
+      end
+
     per_page = Map.get(params, "per_page", "20") |> String.to_integer() |> min(100)
 
     {posts, total} = Blog.list_posts(page: page, per_page: per_page)
@@ -162,8 +167,15 @@ defmodule MyAppWeb.FallbackController do
     |> json(%{errors: %{detail: "Not found"}})
   end
 
-  # Unauthorized
+  # Unauthorized — no valid credentials (401)
   def call(conn, {:error, :unauthorized}) do
+    conn
+    |> put_status(:unauthorized)
+    |> json(%{errors: %{detail: "Unauthorized"}})
+  end
+
+  # Forbidden — authenticated, but not allowed to do this (403)
+  def call(conn, {:error, :forbidden}) do
     conn
     |> put_status(:forbidden)
     |> json(%{errors: %{detail: "Forbidden"}})

@@ -145,26 +145,29 @@ Code quality checks run automatically when files are written or edited:
 
 ### On-Demand (full project)
 
-Run a complete analysis from the project root:
+Run a complete analysis from a checkout of this repo:
 
 ```bash
-bash ~/.claude/scripts/elixir-phoenix-guide/run_analysis.sh
+bash scripts/run_analysis.sh
 ```
 
 Or target specific checks:
 
 ```bash
 # Single file analysis
-elixir ~/.claude/scripts/elixir-phoenix-guide/code_quality.exs all lib/app_web/live/my_live.ex
+elixir scripts/code_quality.exs all lib/app_web/live/my_live.ex
 
 # Specific check
-elixir ~/.claude/scripts/elixir-phoenix-guide/code_quality.exs complexity lib/app_web/live/my_live.ex
-elixir ~/.claude/scripts/elixir-phoenix-guide/code_quality.exs duplication lib/app_web/live/my_live.ex
-elixir ~/.claude/scripts/elixir-phoenix-guide/code_quality.exs unused lib/app_web/live/my_live.ex
+elixir scripts/code_quality.exs complexity lib/app_web/live/my_live.ex
+elixir scripts/code_quality.exs duplication lib/app_web/live/my_live.ex
+elixir scripts/code_quality.exs unused lib/app_web/live/my_live.ex
 
 # Scan entire lib/ directory
-elixir ~/.claude/scripts/elixir-phoenix-guide/code_quality.exs scan lib/
+elixir scripts/code_quality.exs scan lib/
 ```
+
+When installed as a plugin, the scripts live inside the plugin install directory rather than
+at a fixed path in the project — run the commands above from a checkout of this repo instead.
 
 ---
 

@@ -198,6 +198,9 @@ def mount(_params, _session, socket) do
 end
 ```
 
+For collections, prefer **streams** (below) — the current recommended mechanism; `temporary_assigns`
+remains useful for one-shot large payloads that aren't managed as a growing/shrinking collection.
+
 ## Flash Messages
 
 Use `put_flash/3` and `clear_flash/2` for user feedback.
@@ -406,12 +409,14 @@ def mount(_params, _session, socket) do
 end
 ```
 
-### ❌ Mistake 2: Subscribing in Both Phases
+### ❌ Mistake 2: Subscribing Without Checking connected?
 
 ```elixir
 @impl true
 def mount(_params, _session, socket) do
-  # BAD - Subscribes during static render (doesn't work)
+  # BAD - subscribing in the disconnected mount is wasted work in a throwaway
+  # process, not a duplicate subscription — that process's subscription never
+  # receives anything before it's discarded, and mount runs again once connected
   Phoenix.PubSub.subscribe(MyApp.PubSub, "topic")
   {:ok, socket}
 end

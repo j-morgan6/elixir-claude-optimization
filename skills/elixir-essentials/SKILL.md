@@ -49,13 +49,16 @@ def process(_), do: nil
 
 **Bad:**
 ```elixir
+# Nested if inside else — hard to read and not how Elixir expresses multi-way branching
 def handle_response(response) do
   if response.status == 200 do
     {:ok, response.body}
-  else if response.status == 404 do
-    {:error, :not_found}
   else
-    {:error, :unknown}
+    if response.status == 404 do
+      {:error, :not_found}
+    else
+      {:error, :unknown}
+    end
   end
 end
 ```
