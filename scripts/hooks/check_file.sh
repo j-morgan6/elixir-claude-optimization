@@ -22,7 +22,20 @@ add() { FINDINGS="${FINDINGS}
 • $1"; }
 
 # --- project cache (written by detect_project.sh at SessionStart) ---
-PROJ="${CLAUDE_PROJECT_DIR:-$PWD}"
+# Walk-up fallback mirrors detect_project.sh so writer and reader hash the
+# same project root when CLAUDE_PROJECT_DIR is unset.
+find_project_root() {
+  local dir="$PWD"
+  while [ "$dir" != "/" ]; do
+    if [ -f "$dir/mix.exs" ]; then
+      echo "$dir"
+      return 0
+    fi
+    dir="$(dirname "$dir")"
+  done
+  echo "$PWD"
+}
+PROJ="${CLAUDE_PROJECT_DIR:-$(find_project_root)}"
 CACHE_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/elixir-phoenix-guide}/cache"
 KEY=$(printf '%s' "$PROJ" | shasum | cut -c1-12)
 CACHE="$CACHE_DIR/$KEY.json"
@@ -46,7 +59,12 @@ if [ "$IS_TEST" -eq 0 ] && [ "$IS_EX" -eq 1 ]; then
     add 'Open redirect — user-controlled URL. Use verified routes (~p) or whitelist the target.'
   grep -qE 'Logger\.(info|warning|warn|error|debug|notice)\(.*(password|token|secret|api_key|credentials|private_key)' "$FILE" && \
     add 'Possible sensitive data in Logger call — redact passwords/tokens/secrets before logging.'
-  grep -qE '(token|secret|api_key|signature)[[:space:]]*==[[:space:]]*[a-z_]|[a-z_][[:space:]]*==[[:space:]]*(token|secret|api_key|signature)\b' "$FILE" && \
+  # Literal operands (nil/true/false) are presence checks, not secret
+  # comparisons — filter them out on either side to avoid false positives.
+  TIMING=$(grep -E '(token|secret|api_key|signature)[[:space:]]*==[[:space:]]*[a-z_]|[a-z_][[:space:]]*==[[:space:]]*(token|secret|api_key|signature)\b' "$FILE" 2>/dev/null \
+    | grep -vE '==[[:space:]]*(nil|true|false)([^a-zA-Z0-9_]|$)' \
+    | grep -vE '(^|[^a-zA-Z0-9_.])(nil|true|false)[[:space:]]*==')
+  [ -n "$TIMING" ] && \
     add 'Timing-unsafe secret comparison with == — use Plug.Crypto.secure_compare/2.'
   grep -qE 'IO\.inspect\(|(^|[^a-zA-Z_.])dbg\(' "$FILE" && [ "${FILE##*.}" = "ex" ] && \
     add 'Debug call (IO.inspect/dbg) in lib code — remove before committing.'
@@ -58,20 +76,22 @@ if [ "$IS_TEST" -eq 0 ]; then
     add 'raw/1 bypasses HTML escaping — XSS risk if content includes user input. Sanitize (HtmlSanitizeEx) or drop raw/1.'
 fi
 
-# --- deprecations (Phoenix 1.7+/1.8) ---
-grep -qE 'form_for\(' "$FILE" && \
-  add 'form_for is deprecated — use <.form for={to_form(@changeset)}>.'
-grep -qE '(^|[^_a-zA-Z])(live_redirect|live_patch)\b' "$FILE" && \
-  add 'live_redirect/live_patch are deprecated — use <.link navigate={...}>/<.link patch={...}> or push_navigate/push_patch.'
-if [ "$HAS_SCOPE" = "true" ] && grep -qE '@current_user\b' "$FILE" && ! grep -qE 'current_scope' "$FILE"; then
-  add 'Phoenix 1.8 scope detected: use @current_scope (access user via @current_scope.user) instead of @current_user.'
+# --- deprecations (Phoenix 1.7+/1.8; skip test files) ---
+if [ "$IS_TEST" -eq 0 ]; then
+  grep -qE 'form_for\(' "$FILE" && \
+    add 'form_for is deprecated — use <.form for={to_form(@changeset)}>.'
+  grep -qE '(^|[^_a-zA-Z])(live_redirect|live_patch)\b' "$FILE" && \
+    add 'live_redirect/live_patch are deprecated — use <.link navigate={...}>/<.link patch={...}> or push_navigate/push_patch.'
+  if [ "$HAS_SCOPE" = "true" ] && grep -qE '@current_user\b' "$FILE" && ! grep -qE 'current_scope' "$FILE"; then
+    add 'Phoenix 1.8 scope detected: use @current_scope (access user via @current_scope.user) instead of @current_user.'
+  fi
 fi
 
 # --- @impl per-callback (lib .ex only; init/render excluded: Plug/components) ---
 if [ "$IS_TEST" -eq 0 ] && [ "${FILE##*.}" = "ex" ]; then
   MISSING=$(awk '
     /^[[:space:]]*#/ { next }
-    /^[[:space:]]*def (mount|handle_event|handle_info|handle_call|handle_cast|handle_continue|terminate)\(/ {
+    /^[[:space:]]*def (mount|handle_params|handle_event|handle_info|handle_call|handle_cast|handle_continue|handle_async|terminate)\(/ {
       if (prev !~ /@impl/) print NR": "$0
     }
     NF { prev = $0 }
