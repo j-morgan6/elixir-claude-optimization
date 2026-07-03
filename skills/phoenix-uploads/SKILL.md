@@ -14,13 +14,15 @@ auto_suggest: true
 
 ## RULES — Follow these with no exceptions
 
-1. **Use manual uploads (NOT auto_upload: true)** for form submission patterns
+⚠️ **`priv/static/uploads` is a DEV-ONLY pattern.** In a release/container, `priv/static` is replaced on every deploy — user uploads are silently lost, and runtime files are never in the digest manifest. In production use object storage (S3 via `:external` uploads) or a configured writable directory outside the release (e.g. a mounted volume), served by a dedicated Plug.Static.
+
+1. **Default to manual uploads** — `auto_upload: true` works with submit, but entries must be fully uploaded before you consume them; prefer manual uploads unless you need incremental upload UX
 2. **Always add upload directory to static_paths()** — files won't be accessible without this
 3. **Handle upload errors** — display error_to_string/1 output in templates
 4. **Create upload directories with File.mkdir_p!** before saving files
 5. **Generate unique filenames** — prevent collisions and path traversal attacks
 6. **Validate file types server-side** — never trust client MIME types
-7. **Restart server after changing static_paths()** — changes don't apply until restart
+7. **If static_paths() changes don't take effect, restart the server** — the code reloader usually recompiles the endpoint on the next request
 
 ---
 
@@ -49,7 +51,7 @@ Only use `auto_upload: true` when:
 - You have `handle_progress/3` callback
 - You consume entries outside form submission
 
-**⚠️ Never use auto_upload: true with form submission patterns!**
+**`auto_upload: true` works with submit, but entries must be fully uploaded before you consume them** — check `entry.done?` / rely on `consume_uploaded_entries` only after progress completes. Default to manual uploads unless you need incremental upload UX.
 
 ## Complete Upload Pattern
 
@@ -99,7 +101,8 @@ end
 ### Template
 
 ```heex
-<.simple_form for={@form} phx-change="validate" phx-submit="save">
+<%!-- Phoenix 1.8 removed the old simple-form component; use <.form> --%>
+<.form for={@form} phx-change="validate" phx-submit="save">
   <.input field={@form[:title]} label="Title" />
 
   <div>
@@ -127,7 +130,7 @@ end
   <:actions>
     <.button phx-disable-with="Uploading...">Upload</.button>
   </:actions>
-</.simple_form>
+</.form>
 ```
 
 ## Error Handling
@@ -270,7 +273,7 @@ end
 **Fixes:**
 1. Check static_paths includes "uploads"
 2. Verify file exists in `priv/static/uploads/`
-3. **Restart server** after changing static_paths
+3. If the fix doesn't take effect, restart the server (the code reloader usually recompiles the endpoint on the next request, but a restart guarantees it)
 4. Check file permissions (should be readable)
 
 ```elixir
@@ -293,26 +296,11 @@ end
 
 ### Files Work in Dev but Not Production
 
-**Problem:** Files serve correctly locally but fail in production
+**Problem:** Uploaded files serve correctly locally but are missing (404) after a production deploy
 
-**Fixes:**
+**This is almost always the `priv/static/uploads` DEV-ONLY pattern** described in the rules above — `priv/static` is replaced on every release deploy, so anything written there at runtime is gone after the next deploy. `mix phx.digest` does not help here; it only fingerprints assets that existed *at build time*, not files uploaded at runtime.
 
-1. **Run `mix phx.digest` before deployment:**
-```bash
-MIX_ENV=prod mix phx.digest
-```
-
-2. **Check production endpoint config:**
-```elixir
-# config/runtime.exs
-config :my_app, MyAppWeb.Endpoint,
-  cache_static_manifest: "priv/static/cache_manifest.json"
-```
-
-3. **Ensure files are deployed:**
-```
-# Check your deployment includes priv/static/
-```
+**Fix:** Move uploads to object storage (S3 via `:external` uploads) or a writable directory outside the release, served by a dedicated `Plug.Static`. See the warning at the top of this skill.
 
 ## Security Best Practices
 
@@ -418,19 +406,19 @@ end
 
 ## Common Pitfalls
 
-### ❌ Using auto_upload with form submit
+### ⚠️ Using auto_upload with form submit without checking entry state
 ```elixir
-# DON'T DO THIS
+# Risky — consumes entries that may not be done uploading yet
 allow_upload(:photos, auto_upload: true, ...)
 
 def handle_event("save", _params, socket) do
-  consume_uploaded_entries(socket, :photos, ...)  # Won't work!
+  consume_uploaded_entries(socket, :photos, ...)  # Fine only once all entries are done
 end
 ```
 
-### ✅ Use manual upload instead
+### ✅ Prefer manual upload unless you need incremental UX
 ```elixir
-# DO THIS
+# DO THIS — simplest correct default
 allow_upload(:photos, ...)
 
 def handle_event("save", _params, socket) do
@@ -470,7 +458,8 @@ def static_paths, do: ~w(assets uploads favicon.ico)
 # 1. Add directory to static_paths
 def static_paths, do: ~w(assets uploads favicon.ico)
 
-# 2. Create directory structure
+# 2. Create directory structure (DEV ONLY — see warning at top of skill;
+#    use object storage or a mounted volume in production)
 priv/static/uploads/
 
 # 3. Configure upload in mount
@@ -487,7 +476,7 @@ end)
 # 5. Reference in templates
 <img src="/uploads/#{filename}" />
 
-# 6. Restart server to apply changes
+# 6. If static_paths() changes don't take effect, restart the server
 mix phx.server
 ```
 

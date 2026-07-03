@@ -33,13 +33,13 @@ Channels bypass the Plug pipeline, so session-based auth doesn't work. Use token
 # In a controller or LiveView — generate a token for the current user
 defmodule MyAppWeb.UserAuth do
   def generate_socket_token(conn) do
-    Phoenix.Token.sign(conn, "user socket", conn.assigns.current_user.id)
+    Phoenix.Token.sign(conn, "user socket", conn.assigns.current_scope.user.id)
   end
 end
 
 # In your layout or root template
 <script>
-  window.userToken = "<%= Phoenix.Token.sign(@conn, "user socket", @current_user.id) %>"
+  window.userToken = "<%= Phoenix.Token.sign(@conn, "user socket", @current_scope.user.id) %>"
 </script>
 ```
 
@@ -54,7 +54,8 @@ defmodule MyAppWeb.UserSocket do
 
   @impl true
   def connect(%{"token" => token}, socket, _connect_info) do
-    # Tokens expire after 2 weeks by default — configure max_age
+    # Phoenix.Token.verify/4 defaults max_age to 86_400 (1 day); this example
+    # passes max_age: 1_209_600 to extend it to 2 weeks.
     case Phoenix.Token.verify(socket, "user socket", token, max_age: 1_209_600) do
       {:ok, user_id} ->
         {:ok, assign(socket, :user_id, user_id)}
@@ -322,7 +323,7 @@ defmodule MyAppWeb.RoomChannelTest do
     assert_reply ref, :error, %{errors: _}
   end
 
-  test "unauthorized user cannot join room" do
+  test "unauthorized user cannot join room", %{socket: socket, room: room} do
     other_user = user_fixture()
     token = Phoenix.Token.sign(MyAppWeb.Endpoint, "user socket", other_user.id)
     {:ok, socket} = connect(MyAppWeb.UserSocket, %{"token" => token})
@@ -332,7 +333,8 @@ defmodule MyAppWeb.RoomChannelTest do
   end
 
   test "presence is tracked on join", %{socket: socket, user: user} do
-    assert %{^(to_string(user.id)) => %{metas: [%{online_at: _}]}} =
+    user_id = to_string(user.id)
+    assert %{^user_id => %{metas: [%{online_at: _}]}} =
              MyAppWeb.Presence.list(socket)
   end
 end

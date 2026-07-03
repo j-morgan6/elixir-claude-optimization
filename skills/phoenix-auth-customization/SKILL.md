@@ -6,6 +6,7 @@ file_patterns:
   - "**/accounts/*.ex"
   - "**/user.ex"
   - "**/user_registration_live.ex"
+  - "**/user_live/registration.ex"
 auto_suggest: true
 ---
 
@@ -33,12 +34,16 @@ mix phx.gen.auth Accounts User users
 # This creates:
 # - Migration: priv/repo/migrations/*_create_users_auth_tables.exs
 # - Schema: lib/my_app/accounts/user.ex
+# - Scope: lib/my_app/accounts/scope.ex
 # - Context: lib/my_app/accounts.ex
-# - LiveViews: lib/my_app_web/live/user_*_live.ex
-# - Components: lib/my_app_web/controllers/user_session_controller.ex
+# - LiveViews: lib/my_app_web/live/user_live/registration.ex, login.ex,
+#              confirmation.ex, settings.ex
+# - Controller: lib/my_app_web/controllers/user_session_controller.ex
 # - Plugs: lib/my_app_web/user_auth.ex
-# - Tests: test/my_app/accounts_test.exs, test/my_app_web/live/user_*_live_test.exs
+# - Tests: test/my_app/accounts_test.exs, test/my_app_web/live/user_live/*_test.exs
 ```
+
+Phoenix 1.8's `phx.gen.auth` defaults to **magic-link (passwordless) auth** — registration has no password field unless you pass options — and generates a `MyApp.Accounts.Scope` module consumed as `@current_scope`.
 
 ---
 
@@ -104,10 +109,11 @@ end
 ### Step 3: Update the Registration LiveView
 
 ```elixir
-# In user_registration_live.ex — update the form
+# In lib/my_app_web/live/user_live/registration.ex — update the form
 def render(assigns) do
   ~H"""
-  <.simple_form for={@form} id="registration_form" phx-submit="save" phx-change="validate">
+  <%!-- Phoenix 1.8 removed the old simple-form component; use <.form> --%>
+  <.form for={@form} id="registration_form" phx-submit="save" phx-change="validate">
     <.input field={@form[:email]} type="email" label="Email" required />
     <.input field={@form[:username]} type="text" label="Username" required />
     <.input field={@form[:password]} type="password" label="Password" required />
@@ -116,7 +122,7 @@ def render(assigns) do
         Create an account
       </.button>
     </:actions>
-  </.simple_form>
+  </.form>
   """
 end
 

@@ -19,7 +19,7 @@ auto_suggest: true
 4. **Use Map.get(assigns, :key, default)** for optional assigns in helper functions
 5. **Return proper tuples** — `{:ok, socket}` from mount, `{:noreply, socket}` from handle_event
 6. **Use `with` for error handling** in event handlers — assign errors to socket, don't crash
-7. **Never use auto_upload: true with form submission** — use manual uploads instead
+7. **`auto_upload: true` works with submit, but entries must be fully uploaded before you consume them** — check `entry.done?` / rely on `consume_uploaded_entries` only after progress completes; default to manual uploads unless you need incremental upload UX
 8. **Check `core_components.ex` for existing components** before creating custom ones
 9. **Never query the database directly from LiveViews** — call context functions instead
 
@@ -275,13 +275,14 @@ end
 Bind forms to changesets for validation.
 
 ```heex
-<.simple_form for={@form} phx-change="validate" phx-submit="save">
+<%!-- Phoenix 1.8 removed the old simple-form component; use <.form> --%>
+<.form for={@form} phx-change="validate" phx-submit="save">
   <.input field={@form[:title]} label="Title" />
   <.input field={@form[:body]} type="textarea" label="Body" />
   <:actions>
     <.button>Save</.button>
   </:actions>
-</.simple_form>
+</.form>
 ```
 
 ```elixir

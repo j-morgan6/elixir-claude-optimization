@@ -15,7 +15,7 @@ auto_suggest: true
 3. **Set `on_delete` explicitly in migrations** — `:delete_all` for owned children, `:nothing` for references to independent entities
 4. **Always create indexes on foreign key columns** — missing FK indexes cause slow joins and lookups on the child table
 5. **Use `on_replace: :delete` in `cast_assoc` for list management** — allows removing items by omitting them from the input
-6. **Preload associations before updating them** — `cast_assoc` compares against currently loaded data; unloaded associations cause silent data loss
+6. **Preload associations before updating them** — `cast_assoc/3` **raises** (`attempting to cast or change association ... that was not loaded`) if the association isn't preloaded; preload before update
 
 ---
 
@@ -115,7 +115,8 @@ end
 # Bad — ingredients not preloaded, cast_assoc can't compare
 recipe = Repo.get!(Recipe, id)
 Recipe.changeset(recipe, attrs)  # ingredients is %Ecto.Association.NotLoaded{}
-|> Repo.update()  # Silently ignores association changes!
+|> Repo.update()  # Raises: attempting to cast or change association
+                  # `ingredients` from `MyApp.Recipes.Recipe` that was not loaded
 
 # Good — preload before updating
 recipe = Repo.get!(Recipe, id) |> Repo.preload(:ingredients)
@@ -187,8 +188,10 @@ defmodule MyApp.Orders do
           product_id: item.product_id,
           quantity: item.quantity,
           price: item.price,
-          inserted_at: DateTime.utc_now(:second),
-          updated_at: DateTime.utc_now(:second)
+          # default timestamps() are :naive_datetime — use DateTime only if
+          # the schema uses :utc_datetime
+          inserted_at: NaiveDateTime.utc_now(:second),
+          updated_at: NaiveDateTime.utc_now(:second)
         }
       end)
     end)
@@ -267,8 +270,8 @@ end
 ```elixir
 # :delete_all — child cannot exist without parent
 add :comment_id, references(:comments, on_delete: :delete_all)  # Reply → Comment
-add :line_item_id, references(:orders, on_delete: :delete_all)  # LineItem → Order
-add :ingredient_id, references(:recipes, on_delete: :delete_all)  # Ingredient → Recipe
+add :order_id, references(:orders, on_delete: :delete_all), null: false  # LineItem → Order
+add :recipe_id, references(:recipes, on_delete: :delete_all), null: false  # Ingredient → Recipe
 
 # :nothing — resource is referenced but independent
 add :user_id, references(:users, on_delete: :nothing)  # Post → User
