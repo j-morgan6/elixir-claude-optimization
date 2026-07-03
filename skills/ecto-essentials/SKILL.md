@@ -130,8 +130,10 @@ end
 # Returning {:ok, count} from inside would yield {:ok, {:ok, count}} to the caller.
 # Callers see {:ok, count} or {:error, reason}:
 case transfer_images(ids, from_id, to_id) do
-  {:ok, count} -> # count images transferred
-  {:error, reason} -> # rolled back
+  # count is the number of images transferred
+  {:ok, count} -> Logger.info("Images transferred", count: count)
+  # transaction rolled back
+  {:error, reason} -> Logger.error("Transfer failed", reason: inspect(reason))
 end
 ```
 
