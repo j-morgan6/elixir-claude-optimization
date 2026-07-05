@@ -123,7 +123,7 @@ fi
 # Write cache file (no jq dependency — pure bash)
 cat > "$CACHE_FILE" <<EOF
 {
-  "plugin_version": "2.2.0",
+  "plugin_version": "2.4.0",
   "detected_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "app_name": "${APP_NAME:-unknown}",
   "phoenix_version": "$PHOENIX_VERSION",

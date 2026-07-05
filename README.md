@@ -222,6 +222,7 @@ elixir-phoenix-guide/
 │   ├── code_quality.exs              # AST-based Elixir analysis (on demand)
 │   ├── detect_project.sh             # Project stack detection (used by SessionStart)
 │   ├── run_analysis.sh               # Full project analysis runner (on demand)
+│   ├── sync_copilot.sh               # regenerate the Copilot port from skills/
 │   └── hooks/                        # Scripts the shipped hooks actually run
 │       ├── bash_guard.sh             # PreToolUse (Bash)
 │       └── check_file.sh             # PostToolUse (Write|Edit)

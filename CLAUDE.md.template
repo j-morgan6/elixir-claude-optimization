@@ -41,8 +41,7 @@ mix test
 # Database operations
 mix ecto.create
 mix ecto.migrate
-mix ecto.rollback
-mix ecto.reset
+mix ecto.rollback  # roll back the last migration (ecto.reset is blocked by the plugin's hook; run it manually in your own terminal if you truly need a reset)
 
 # Code quality
 mix format
