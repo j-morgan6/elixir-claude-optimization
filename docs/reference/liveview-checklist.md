@@ -184,7 +184,7 @@ end
 - [ ] Show loading states during operations
 
 ```heex
-<.simple_form for={@form} phx-change="validate" phx-submit="save">
+<.form for={@form} phx-change="validate" phx-submit="save">
   <.input field={@form[:title]} label="Title" />
 
   <div phx-drop-target={@uploads.image.ref}>
@@ -201,7 +201,7 @@ end
   <:actions>
     <.button phx-disable-with="Uploading...">Upload</.button>
   </:actions>
-</.simple_form>
+</.form>
 ```
 
 ## Navigation

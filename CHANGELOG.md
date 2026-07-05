@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-07-05
+
+### Fixed
+- **Hooks were non-functional** — every content hook read `$CLAUDE_HOOK_FILE_PATH`
+  (an environment variable Claude Code never sets) and wrote feedback to stdout
+  (Claude Code reads block reasons from stderr). Hooks are rebuilt on the real
+  contract: JSON on stdin, findings on stderr with exit 2.
+- **`deployment-gotchas`** taught nonexistent `System.get_env!/1` — corrected to
+  `System.fetch_env!/1`.
+- **`oban-essentials`** recommended `testing: :inline` alongside `assert_enqueued`
+  (mutually exclusive) — now `testing: :manual`.
+- **`otp-essentials`** claimed supervised tasks auto-restart — Task.Supervisor
+  defaults to `:temporary`.
+- **`phoenix-liveview-auth`** import-except advice broke the conn plugs in
+  UserAuth — replaced with the 1.8 generator's qualified-call pattern.
+- **`phoenix-channels-essentials`** — two non-compiling test examples fixed;
+  Phoenix.Token max_age claim corrected (default is 1 day).
+- **`phoenix-uploads`** — priv/static/uploads flagged as dev-only; production
+  guidance (object storage / mounted volume) added.
+- **`testing-essentials`** — `async: true` is safe for LiveView tests under the
+  SQL Sandbox; ban lifted.
+- **`ecto-nested-associations`** — inverted FK column names in the cascade guide;
+  cast_assoc raises (not "silently ignores") on un-preloaded associations.
+- `<.simple_form>` (removed in Phoenix 1.8) purged from three skills; auth routes
+  hyphenated; magic-link default documented.
+- Many smaller corrections: security (to_existing_atom raises, hex.audit checks
+  retirement), telemetry (attach is idempotent-by-ID, Logger metadata whitelist),
+  JSON API (401 vs 403, defensive param parsing), Ecto (double-wrapped
+  transaction return).
+- `detect_project.sh` no longer dies on umbrella roots and caches in the plugin
+  data directory instead of polluting the project repo.
+- `code_quality.exs` no longer parses guarded defs as `when/2` or flags
+  pipe-called private functions as unused.
+
+### Changed
+- **BREAKING:** hooks now ship inside the plugin (`hooks/hooks.json`) and
+  activate on plugin install. `hooks-settings.json` is gone; `install.sh` only
+  handles the CLAUDE.md template and legacy cleanup.
+- Low-confidence heuristic hooks removed (nested-if, Enum-chain, static_paths,
+  with/else, missing-preload, template duplication, flash_group — which is not
+  actually deprecated, MIX_ENV=prod — which blocked legitimate release builds,
+  and the SubagentStart rules dump, whose output never reached subagents).
+- All 19 skill descriptions rewritten as differentiated "Use when…" triggers;
+  file_patterns collisions narrowed; duplicated cross-skill sections removed.
+- Reference docs moved from `agents/` (a reserved plugin directory) to
+  `docs/reference/`.
+
+### Added
+- `tests/hooks/run_tests.sh` — fixture-driven tests for every hook check (33
+  test cases, all passing).
+- `scripts/sync_copilot.sh` — regenerates the Copilot port from canonical skills.
+
 ## [2.3.1] - 2026-04-09
 
 ### Fixed
@@ -346,7 +398,8 @@ Install using any of the three methods in README.md. No migration needed.
 
 ---
 
-[Unreleased]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v2.3.1...HEAD
+[Unreleased]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v2.3.1...v2.4.0
 [2.2.0]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/j-morgan6/elixir-phoenix-guide/compare/v1.4.0...v2.0.0

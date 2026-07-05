@@ -34,8 +34,9 @@ Hooks receive JSON on stdin. Get the file path with:
 FILE=$(jq -r '.tool_input.file_path // empty')
 ```
 
-(`$CLAUDE_PROJECT_DIR` is the project root; there is no
-`CLAUDE_HOOK_FILE_PATH` environment variable.)
+(`$CLAUDE_PROJECT_DIR` is the project root. Claude Code does not set a
+dedicated file-path environment variable for hooks — read the path from
+stdin as shown above.)
 
 ## Manual install (not using the plugin manager)
 
